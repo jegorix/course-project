@@ -1,0 +1,5 @@
+/Users/macbook/Desktop/курсовая_25.11.25/build/CMakeFiles/HRManagementSystem.dir
+/Users/macbook/Desktop/курсовая_25.11.25/build/CMakeFiles/edit_cache.dir
+/Users/macbook/Desktop/курсовая_25.11.25/build/CMakeFiles/rebuild_cache.dir
+/Users/macbook/Desktop/курсовая_25.11.25/build/CMakeFiles/HRManagementSystem_autogen_timestamp_deps.dir
+/Users/macbook/Desktop/курсовая_25.11.25/build/CMakeFiles/HRManagementSystem_autogen.dir

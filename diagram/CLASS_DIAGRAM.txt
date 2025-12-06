@@ -1,0 +1,176 @@
+@startuml
+' Диаграмма классов для системы кадрового учета в текстовом формате UML
+' Программа «Кадровый учет на малом предприятии»
+
+' ============================================
+' КЛАСС Person (Абстрактный базовый класс)
+' ============================================
+class Person {
+    <<abstract>>
+    --
+    # firstName : string
+    # lastName : string
+    --
+    + Person()
+    + Person(firstName: string, lastName: string)
+    + {abstract} ~Person()
+    + getFirstName() : string
+    + getLastName() : string
+    + getFullName() : string
+    + setFirstName(firstName: string) : void
+    + setLastName(lastName: string) : void
+    + {abstract} displayInfo() : void
+}
+
+' ============================================
+' КЛАСС Employee (Наследует от Person)
+' ============================================
+class Employee {
+    # employeeId : int
+    # departmentId : int
+    # salary : double
+    --
+    + Employee()
+    + Employee(employeeId: int, firstName: string, lastName: string, departmentId: int, salary: double)
+    + {virtual} ~Employee()
+    + getEmployeeId() : int
+    + getDepartmentId() : int
+    + getSalary() : double
+    + setEmployeeId(employeeId: int) : void
+    + setDepartmentId(departmentId: int) : void
+    + setSalary(salary: double) : void
+    + {virtual} displayInfo() : void
+    + {virtual} calculateTotalIncome() : double
+}
+
+' ============================================
+' КЛАСС Manager (Наследует от Employee)
+' ============================================
+class Manager {
+    - subordinates : vector<int>
+    --
+    + Manager()
+    + Manager(employeeId: int, firstName: string, lastName: string, departmentId: int, salary: double, subordinates: vector<int>)
+    + ~Manager()
+    + addSubordinate(subordinateId: int) : void
+    + removeSubordinate(subordinateId: int) : void
+    + getSubordinates() : vector<int>
+    + getSubordinatesCount() : int
+    + hasSubordinate(subordinateId: int) : bool
+    + {override} displayInfo() : void
+    + {override} calculateTotalIncome() : double
+}
+
+' ============================================
+' КЛАСС Worker (Наследует от Employee)
+' ============================================
+class Worker {
+    - positionId : int
+    - bonus : double
+    --
+    + Worker()
+    + Worker(employeeId: int, firstName: string, lastName: string, departmentId: int, salary: double, positionId: int, bonus: double = 0.0)
+    + ~Worker()
+    + getPositionId() : int
+    + getBonus() : double
+    + setPositionId(positionId: int) : void
+    + setBonus(bonus: double) : void
+    + {override} displayInfo() : void
+    + {override} calculateTotalIncome() : double
+}
+
+' ============================================
+' КЛАСС Department
+' ============================================
+class Department {
+    - departmentId : int
+    - departmentName : string
+    - managerId : int
+    - employees : vector<int>
+    --
+    + Department()
+    + Department(departmentId: int, departmentName: string, managerId: int)
+    + ~Department()
+    + getDepartmentId() : int
+    + getDepartmentName() : string
+    + getManagerId() : int
+    + getEmployees() : vector<int>
+    + getEmployeesCount() : int
+    + setDepartmentId(departmentId: int) : void
+    + setDepartmentName(departmentName: string) : void
+    + setManagerId(managerId: int) : void
+    + addEmployee(employeeId: int) : void
+    + removeEmployee(employeeId: int) : void
+    + hasEmployee(employeeId: int) : bool
+    + displayInfo() : void
+}
+
+' ============================================
+' КЛАСС Position
+' ============================================
+class Position {
+    - positionId : int
+    - positionName : string
+    - workHoursPerWeek : int
+    --
+    + Position()
+    + Position(positionId: int, positionName: string, workHoursPerWeek: int)
+    + ~Position()
+    + getPositionId() : int
+    + getPositionName() : string
+    + getWorkHoursPerWeek() : int
+    + setPositionId(positionId: int) : void
+    + setPositionName(positionName: string) : void
+    + setWorkHoursPerWeek(workHoursPerWeek: int) : void
+    + displayInfo() : void
+}
+
+' ============================================
+' КЛАСС HireDate
+' ============================================
+class HireDate {
+    - employeeId : int
+    - day : int
+    - month : int
+    - year : int
+    - hour : int
+    - minute : int
+    --
+    + HireDate()
+    + HireDate(employeeId: int, day: int, month: int, year: int, hour: int, minute: int)
+    + ~HireDate()
+    + getEmployeeId() : int
+    + getDay() : int
+    + getMonth() : int
+    + getYear() : int
+    + getHour() : int
+    + getMinute() : int
+    + setEmployeeId(employeeId: int) : void
+    + setDay(day: int) : void
+    + setMonth(month: int) : void
+    + setYear(year: int) : void
+    + setHour(hour: int) : void
+    + setMinute(minute: int) : void
+    + getDateString() : string
+    + getTimeString() : string
+    + getFullDateTimeString() : string
+    + displayInfo() : void
+}
+
+' ============================================
+' ОТНОШЕНИЯ НАСЛЕДОВАНИЯ
+' ============================================
+Person <|-- Employee
+Employee <|-- Manager
+Employee <|-- Worker
+
+' ============================================
+' АССОЦИАЦИИ
+' ============================================
+Employee "1" --> "0..*" Department : works in
+Employee "1" --> "0..*" HireDate : has
+Worker "1" --> "0..1" Position : has
+Manager "1" --> "0..*" Employee : manages
+
+@enduml
+

@@ -1,0 +1,2 @@
+set(__QT_DEPLOY_TARGET_HRManagementSystem_FILE /Users/macbook/Desktop/курсовая_25.11.25/build/HRManagementSystem)
+set(__QT_DEPLOY_TARGET_HRManagementSystem_TYPE EXECUTABLE)

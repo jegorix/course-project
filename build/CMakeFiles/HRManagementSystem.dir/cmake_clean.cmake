@@ -1,0 +1,36 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/HRManagementSystem_autogen.dir/AutogenUsed.txt"
+  "CMakeFiles/HRManagementSystem_autogen.dir/ParseCache.txt"
+  "HRManagementSystem_autogen"
+  "CMakeFiles/HRManagementSystem.dir/HRManagementSystem_autogen/mocs_compilation.cpp.o"
+  "CMakeFiles/HRManagementSystem.dir/HRManagementSystem_autogen/mocs_compilation.cpp.o.d"
+  "CMakeFiles/HRManagementSystem.dir/src/DataManager.cpp.o"
+  "CMakeFiles/HRManagementSystem.dir/src/DataManager.cpp.o.d"
+  "CMakeFiles/HRManagementSystem.dir/src/Department.cpp.o"
+  "CMakeFiles/HRManagementSystem.dir/src/Department.cpp.o.d"
+  "CMakeFiles/HRManagementSystem.dir/src/Employee.cpp.o"
+  "CMakeFiles/HRManagementSystem.dir/src/Employee.cpp.o.d"
+  "CMakeFiles/HRManagementSystem.dir/src/HireDate.cpp.o"
+  "CMakeFiles/HRManagementSystem.dir/src/HireDate.cpp.o.d"
+  "CMakeFiles/HRManagementSystem.dir/src/MainWindow.cpp.o"
+  "CMakeFiles/HRManagementSystem.dir/src/MainWindow.cpp.o.d"
+  "CMakeFiles/HRManagementSystem.dir/src/Manager.cpp.o"
+  "CMakeFiles/HRManagementSystem.dir/src/Manager.cpp.o.d"
+  "CMakeFiles/HRManagementSystem.dir/src/Person.cpp.o"
+  "CMakeFiles/HRManagementSystem.dir/src/Person.cpp.o.d"
+  "CMakeFiles/HRManagementSystem.dir/src/Position.cpp.o"
+  "CMakeFiles/HRManagementSystem.dir/src/Position.cpp.o.d"
+  "CMakeFiles/HRManagementSystem.dir/src/Worker.cpp.o"
+  "CMakeFiles/HRManagementSystem.dir/src/Worker.cpp.o.d"
+  "CMakeFiles/HRManagementSystem.dir/src/main.cpp.o"
+  "CMakeFiles/HRManagementSystem.dir/src/main.cpp.o.d"
+  "HRManagementSystem"
+  "HRManagementSystem.pdb"
+  "HRManagementSystem_autogen/mocs_compilation.cpp"
+  "HRManagementSystem_autogen/timestamp"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/HRManagementSystem.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()
