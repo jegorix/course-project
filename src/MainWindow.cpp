@@ -217,6 +217,12 @@ void MainWindow::editEmployee() {
         QLabel *idLabel = new QLabel(QString::number(employeeId), &dialog);
         layout.addRow("ID:", idLabel);
 
+        QComboBox *typeCombo = new QComboBox(&dialog);
+        typeCombo->addItems({"Работник", "Руководитель"});
+        bool isCurrentlyWorker = (std::dynamic_pointer_cast<Worker>(record->employee) != nullptr);
+        typeCombo->setCurrentIndex(isCurrentlyWorker ? 0 : 1);
+        layout.addRow("Тип:", typeCombo);
+
         QLineEdit *firstNameEdit = new QLineEdit(QString::fromStdString(record->employee->getFirstName()), &dialog);
         QLineEdit *lastNameEdit = new QLineEdit(QString::fromStdString(record->employee->getLastName()), &dialog);
         layout.addRow("Имя:", firstNameEdit);
@@ -237,98 +243,112 @@ void MainWindow::editEmployee() {
         salarySpin->setValue(record->employee->getSalary());
         layout.addRow("Зарплата:", salarySpin);
 
-        QComboBox *positionCombo = nullptr;
-        QDoubleSpinBox *bonusSpin = nullptr;
-        QListWidget *subordinatesList = nullptr;
-        bool isWorker = false;
-        bool isManager = false;
+        QComboBox *positionCombo = new QComboBox(&dialog);
+        positionCombo->addItem("Не выбрано", 0);
+        for (const auto& pos : manager->getPositions()) {
+            positionCombo->addItem(QString::fromStdString(pos.getPositionName()), pos.getPositionId());
+        }
         
-        if (auto worker = std::dynamic_pointer_cast<Worker>(record->employee)) {
-            isWorker = true;
-            positionCombo = new QComboBox(&dialog);
-            for (const auto& pos : manager->getPositions()) {
-                positionCombo->addItem(QString::fromStdString(pos.getPositionName()), pos.getPositionId());
-                if (pos.getPositionId() == worker->getPositionId()) {
-                    positionCombo->setCurrentIndex(positionCombo->count() - 1);
-                }
+        QDoubleSpinBox *bonusSpin = new QDoubleSpinBox(&dialog);
+        bonusSpin->setMinimum(0);
+        bonusSpin->setMaximum(1000000);
+        
+        QListWidget *subordinatesList = new QListWidget(&dialog);
+        subordinatesList->setSelectionMode(QAbstractItemView::MultiSelection);
+        
+        // Добавить всех работников в список для подчиненных
+        QComboBox *addSubCombo = new QComboBox(&dialog);
+        addSubCombo->addItem("Выберите работника...", 0);
+        for (const auto& empRecord : manager->getEmployees()) {
+            if (empRecord.employee && 
+                std::dynamic_pointer_cast<Worker>(empRecord.employee) &&
+                empRecord.employee->getEmployeeId() != employeeId) {
+                addSubCombo->addItem(QString::fromStdString(empRecord.employee->getFullName()),
+                                    empRecord.employee->getEmployeeId());
             }
-            layout.addRow("Должность:", positionCombo);
-
-            bonusSpin = new QDoubleSpinBox(&dialog);
-            bonusSpin->setMinimum(0);
-            bonusSpin->setMaximum(1000000);
-            bonusSpin->setValue(worker->getBonus());
-            layout.addRow("Премия:", bonusSpin);
-        } else if (auto managerPtr = std::dynamic_pointer_cast<Manager>(record->employee)) {
-            isManager = true;
-            subordinatesList = new QListWidget(&dialog);
-            subordinatesList->setSelectionMode(QAbstractItemView::MultiSelection);
-            
-            // Добавить всех работников в список
-            QComboBox *addSubCombo = new QComboBox(&dialog);
-            addSubCombo->addItem("Выберите работника...", 0);
-            for (const auto& empRecord : manager->getEmployees()) {
-                if (empRecord.employee && 
-                    std::dynamic_pointer_cast<Worker>(empRecord.employee) &&
-                    empRecord.employee->getEmployeeId() != employeeId) {
-                    addSubCombo->addItem(QString::fromStdString(empRecord.employee->getFullName()),
-                                        empRecord.employee->getEmployeeId());
-                }
-            }
-            
-            // Показать текущих подчиненных
-            auto subs = managerPtr->getSubordinates();
-            for (int subId : subs) {
-                for (const auto& empRecord : manager->getEmployees()) {
-                    if (empRecord.employee && empRecord.employee->getEmployeeId() == subId) {
-                        QListWidgetItem *item = new QListWidgetItem(QString::fromStdString(empRecord.employee->getFullName()));
-                        item->setData(Qt::UserRole, subId);
-                        subordinatesList->addItem(item);
+        }
+        
+        QPushButton *addSubBtn = new QPushButton("Добавить подчиненного", &dialog);
+        connect(addSubBtn, &QPushButton::clicked, [addSubCombo, subordinatesList]() {
+            int empId = addSubCombo->currentData().toInt();
+            if (empId > 0) {
+                bool exists = false;
+                for (int i = 0; i < subordinatesList->count(); ++i) {
+                    if (subordinatesList->item(i)->data(Qt::UserRole).toInt() == empId) {
+                        exists = true;
                         break;
                     }
                 }
+                if (!exists) {
+                    QListWidgetItem *item = new QListWidgetItem(addSubCombo->currentText());
+                    item->setData(Qt::UserRole, empId);
+                    subordinatesList->addItem(item);
+                }
             }
-            
-            QPushButton *addSubBtn = new QPushButton("Добавить подчиненного", &dialog);
-            connect(addSubBtn, &QPushButton::clicked, [addSubCombo, subordinatesList]() {
-                int empId = addSubCombo->currentData().toInt();
-                if (empId > 0) {
-                    bool exists = false;
-                    for (int i = 0; i < subordinatesList->count(); ++i) {
-                        if (subordinatesList->item(i)->data(Qt::UserRole).toInt() == empId) {
-                            exists = true;
+        });
+        
+        QPushButton *removeSubBtn = new QPushButton("Удалить выбранного", &dialog);
+        connect(removeSubBtn, &QPushButton::clicked, [subordinatesList]() {
+            QList<QListWidgetItem*> items = subordinatesList->selectedItems();
+            for (auto* item : items) {
+                delete subordinatesList->takeItem(subordinatesList->row(item));
+            }
+        });
+        
+        QHBoxLayout *subLayout = new QHBoxLayout;
+        subLayout->addWidget(addSubCombo);
+        subLayout->addWidget(addSubBtn);
+        subLayout->addWidget(removeSubBtn);
+        
+        QVBoxLayout *subVLayout = new QVBoxLayout;
+        subVLayout->addLayout(subLayout);
+        subVLayout->addWidget(subordinatesList);
+        
+        QWidget *subWidget = new QWidget(&dialog);
+        subWidget->setLayout(subVLayout);
+        
+        // Инициализация полей в зависимости от текущего типа
+        if (isCurrentlyWorker) {
+            auto worker = std::dynamic_pointer_cast<Worker>(record->employee);
+            if (worker) {
+                for (int i = 0; i < positionCombo->count(); ++i) {
+                    if (positionCombo->itemData(i).toInt() == worker->getPositionId()) {
+                        positionCombo->setCurrentIndex(i);
+                        break;
+                    }
+                }
+                bonusSpin->setValue(worker->getBonus());
+            }
+        } else {
+            auto managerPtr = std::dynamic_pointer_cast<Manager>(record->employee);
+            if (managerPtr) {
+                auto subs = managerPtr->getSubordinates();
+                for (int subId : subs) {
+                    for (const auto& empRecord : manager->getEmployees()) {
+                        if (empRecord.employee && empRecord.employee->getEmployeeId() == subId) {
+                            QListWidgetItem *item = new QListWidgetItem(QString::fromStdString(empRecord.employee->getFullName()));
+                            item->setData(Qt::UserRole, subId);
+                            subordinatesList->addItem(item);
                             break;
                         }
                     }
-                    if (!exists) {
-                        QListWidgetItem *item = new QListWidgetItem(addSubCombo->currentText());
-                        item->setData(Qt::UserRole, empId);
-                        subordinatesList->addItem(item);
-                    }
                 }
-            });
-            
-            QPushButton *removeSubBtn = new QPushButton("Удалить выбранного", &dialog);
-            connect(removeSubBtn, &QPushButton::clicked, [subordinatesList]() {
-                QList<QListWidgetItem*> items = subordinatesList->selectedItems();
-                for (auto* item : items) {
-                    delete subordinatesList->takeItem(subordinatesList->row(item));
-                }
-            });
-            
-            QHBoxLayout *subLayout = new QHBoxLayout;
-            subLayout->addWidget(addSubCombo);
-            subLayout->addWidget(addSubBtn);
-            subLayout->addWidget(removeSubBtn);
-            
-            QVBoxLayout *subVLayout = new QVBoxLayout;
-            subVLayout->addLayout(subLayout);
-            subVLayout->addWidget(subordinatesList);
-            
-            QWidget *subWidget = new QWidget(&dialog);
-            subWidget->setLayout(subVLayout);
-            layout.addRow("Подчиненные:", subWidget);
+            }
         }
+        
+        layout.addRow("Должность:", positionCombo);
+        layout.addRow("Премия:", bonusSpin);
+        layout.addRow("Подчиненные:", subWidget);
+        
+        // Показывать/скрывать поля в зависимости от типа
+        auto updateFieldsVisibility = [positionCombo, bonusSpin, subWidget](int index) {
+            bool isWorker = (index == 0);
+            positionCombo->setVisible(isWorker);
+            bonusSpin->setVisible(isWorker);
+            subWidget->setVisible(!isWorker);
+        };
+        connect(typeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), updateFieldsVisibility);
+        updateFieldsVisibility(typeCombo->currentIndex());
 
         QDateEdit *dateEdit = new QDateEdit(&dialog);
         dateEdit->setDate(QDate(record->hireDate.getYear(), record->hireDate.getMonth(), record->hireDate.getDay()));
@@ -358,38 +378,104 @@ void MainWindow::editEmployee() {
             }
 
             try {
-                manager->updateEmployeeName(employeeId, firstNameEdit->text().trimmed().toStdString(), 
-                                            lastNameEdit->text().trimmed().toStdString());
-                manager->updateEmployeeDepartment(employeeId, deptCombo->currentData().toInt());
-                manager->updateEmployeeSalary(employeeId, salarySpin->value());
+                // Сохраняем копию сотрудника перед изменениями для undo
+                auto oldEmployeeCopy = manager->cloneEmployee(*record->employee);
+                HireDate oldHireDate = record->hireDate;
+                
+                bool newIsWorker = (typeCombo->currentIndex() == 0);
+                bool oldIsWorker = (std::dynamic_pointer_cast<Worker>(record->employee) != nullptr);
+                bool typeChanged = (newIsWorker != oldIsWorker);
+                
+                // Если тип изменился, создаем новый объект нужного типа
+                if (typeChanged) {
+                    int deptId = deptCombo->currentData().toInt();
+                    double salary = salarySpin->value();
+                    std::string firstName = firstNameEdit->text().trimmed().toStdString();
+                    std::string lastName = lastNameEdit->text().trimmed().toStdString();
+                    
+                    std::shared_ptr<Employee> newEmployee;
+                    if (newIsWorker) {
+                        // Преобразуем в Worker
+                        int positionId = positionCombo->currentData().toInt();
+                        if (positionId == 0) {
+                            QMessageBox::warning(this, "Ошибка", "Выберите должность для работника");
+                            return;
+                        }
+                        double bonus = bonusSpin->value();
+                        newEmployee = std::make_shared<Worker>(employeeId, firstName, lastName, deptId, salary, positionId, bonus);
+                    } else {
+                        // Преобразуем в Manager
+                        std::vector<int> subordinateIds;
+                        for (int i = 0; i < subordinatesList->count(); ++i) {
+                            subordinateIds.push_back(subordinatesList->item(i)->data(Qt::UserRole).toInt());
+                        }
+                        newEmployee = std::make_shared<Manager>(employeeId, firstName, lastName, deptId, salary, subordinateIds);
+                    }
+                    record->employee = newEmployee;
+                } else {
+                    // Тип не изменился, просто обновляем поля
+                    record->employee->setFirstName(firstNameEdit->text().trimmed().toStdString());
+                    record->employee->setLastName(lastNameEdit->text().trimmed().toStdString());
+                    record->employee->setSalary(salarySpin->value());
+                    
+                    if (newIsWorker) {
+                        auto worker = std::dynamic_pointer_cast<Worker>(record->employee);
+                        if (worker) {
+                            int positionId = positionCombo->currentData().toInt();
+                            if (positionId == 0) {
+                                QMessageBox::warning(this, "Ошибка", "Выберите должность");
+                                return;
+                            }
+                            worker->setPositionId(positionId);
+                            worker->setBonus(bonusSpin->value());
+                        }
+                    } else {
+                        auto managerPtr = std::dynamic_pointer_cast<Manager>(record->employee);
+                        if (managerPtr) {
+                            // Удалить всех текущих подчиненных
+                            auto currentSubs = managerPtr->getSubordinates();
+                            for (int subId : currentSubs) {
+                                managerPtr->removeSubordinate(subId);
+                            }
+                            // Добавить новых
+                            for (int i = 0; i < subordinatesList->count(); ++i) {
+                                int subId = subordinatesList->item(i)->data(Qt::UserRole).toInt();
+                                managerPtr->addSubordinate(subId);
+                            }
+                        }
+                    }
+                }
                 
                 // Обновление даты найма
                 QDate date = dateEdit->date();
                 QTime time = timeEdit->time();
                 HireDate newHireDate(employeeId, date.day(), date.month(), date.year(), time.hour(), time.minute());
-                manager->updateEmployeeHireDate(employeeId, newHireDate);
+                record->hireDate = newHireDate;
                 
-                if (isWorker && positionCombo) {
-                    manager->updateEmployeePosition(employeeId, positionCombo->currentData().toInt());
-                    if (bonusSpin) {
-                        manager->updateEmployeeBonus(employeeId, bonusSpin->value());
-                    }
-                } else if (isManager && subordinatesList) {
-                    // Обновление подчиненных менеджера
-                    auto managerPtr = std::dynamic_pointer_cast<Manager>(record->employee);
-                    if (managerPtr) {
-                        // Удалить всех текущих подчиненных
-                        auto currentSubs = managerPtr->getSubordinates();
-                        for (int subId : currentSubs) {
-                            managerPtr->removeSubordinate(subId);
+                // Обновляем отдел (если изменился)
+                int oldDeptId = oldEmployeeCopy->getDepartmentId();
+                int newDeptId = deptCombo->currentData().toInt();
+                if (oldDeptId != newDeptId) {
+                    record->employee->setDepartmentId(newDeptId);
+                    // Обновляем связи с отделами через прямой доступ
+                    auto& depts = const_cast<RecordCollection<Department>&>(manager->getDepartments());
+                    for (auto& dept : depts.data()) {
+                        if (dept.getDepartmentId() == oldDeptId) {
+                            dept.removeEmployee(employeeId);
                         }
-                        // Добавить новых
-                        for (int i = 0; i < subordinatesList->count(); ++i) {
-                            int subId = subordinatesList->item(i)->data(Qt::UserRole).toInt();
-                            managerPtr->addSubordinate(subId);
+                        if (dept.getDepartmentId() == newDeptId) {
+                            if (!dept.hasEmployee(employeeId)) {
+                                dept.addEmployee(employeeId);
+                            }
                         }
                     }
                 }
+                
+                // Создаем одну общую undo-команду для всех изменений
+                manager->pushUndo([this, employeeId, oldEmployeeCopy, oldHireDate]() {
+                    manager->restoreEmployeeFromCopy(employeeId, oldEmployeeCopy, oldHireDate);
+                }, "Редактирование сотрудника");
+                
                 manager->saveAll();
                 refreshAll();
                 QMessageBox::information(this, "Успех", "Сотрудник обновлен");
@@ -951,32 +1037,108 @@ void MainWindow::showSortedResults(const std::vector<EmployeeRecord>& results) {
 void MainWindow::showAverageSalary() {
         QDialog dialog(this);
         dialog.setWindowTitle("Средняя зарплата по отделу");
-        QFormLayout layout(&dialog);
-
+        dialog.setMinimumSize(600, 400);
+        dialog.resize(600, 400);
+        
+        QVBoxLayout *mainLayout = new QVBoxLayout(&dialog);
+        mainLayout->setSpacing(20);
+        mainLayout->setContentsMargins(30, 30, 30, 30);
+        
+        QGroupBox *inputGroup = new QGroupBox("Параметры расчета", &dialog);
+        QFormLayout *formLayout = new QFormLayout(inputGroup);
+        formLayout->setSpacing(15);
+        
         QComboBox *deptCombo = new QComboBox(&dialog);
+        deptCombo->setMinimumHeight(35);
         for (const auto& dept : manager->getDepartments()) {
             deptCombo->addItem(QString::fromStdString(dept.getDepartmentName()), dept.getDepartmentId());
         }
-        layout.addRow("Отдел:", deptCombo);
-
-        QLabel *resultLabel = new QLabel("", &dialog);
-        layout.addRow("Результат:", resultLabel);
-
-        QPushButton *calcBtn = new QPushButton("Рассчитать", &dialog);
-        connect(calcBtn, &QPushButton::clicked, [this, deptCombo, resultLabel]() {
+        formLayout->addRow("Отдел:", deptCombo);
+        
+        mainLayout->addWidget(inputGroup);
+        
+        QGroupBox *resultGroup = new QGroupBox("Результат", &dialog);
+        QVBoxLayout *resultLayout = new QVBoxLayout(resultGroup);
+        resultLayout->setSpacing(10);
+        
+        QLabel *resultLabel = new QLabel("Нажмите 'Рассчитать' для получения результата", &dialog);
+        resultLabel->setAlignment(Qt::AlignCenter);
+        resultLabel->setStyleSheet(
+            "QLabel { "
+            "    font-size: 16pt; "
+            "    font-weight: bold; "
+            "    color: #2c3e50; "
+            "    padding: 20px; "
+            "    background-color: #ecf0f1; "
+            "    border: 2px solid #bdc3c7; "
+            "    border-radius: 8px; "
+            "}"
+        );
+        resultLayout->addWidget(resultLabel);
+        mainLayout->addWidget(resultGroup);
+        
+        QPushButton *calcBtn = new QPushButton("💰 Рассчитать", &dialog);
+        calcBtn->setMinimumHeight(45);
+        calcBtn->setStyleSheet(
+            "QPushButton { "
+            "    background-color: #27ae60; "
+            "    color: white; "
+            "    font-size: 14pt; "
+            "    font-weight: bold; "
+            "    padding: 10px; "
+            "    border-radius: 6px; "
+            "} "
+            "QPushButton:hover { "
+            "    background-color: #229954; "
+            "} "
+            "QPushButton:pressed { "
+            "    background-color: #1e8449; "
+            "}"
+        );
+        connect(calcBtn, &QPushButton::clicked, [&dialog, this, deptCombo, resultLabel]() {
             try {
                 int deptId = deptCombo->currentData().toInt();
+                if (deptId <= 0) {
+                    QMessageBox::warning(&dialog, "Ошибка", "Выберите отдел");
+                    return;
+                }
                 double avg = manager->calculateAverageSalaryForDepartment(deptId);
-                resultLabel->setText(QString("$%1").arg(avg, 0, 'f', 2));
+                QString resultText = QString("$%1").arg(avg, 0, 'f', 2);
+                resultLabel->setText(resultText);
+                resultLabel->setStyleSheet(
+                    "QLabel { "
+                    "    font-size: 28pt; "
+                    "    font-weight: bold; "
+                    "    color: #27ae60; "
+                    "    padding: 25px; "
+                    "    background-color: #d5f4e6; "
+                    "    border: 3px solid #27ae60; "
+                    "    border-radius: 10px; "
+                    "}"
+                );
+                resultLabel->update(); // Принудительное обновление
             } catch (const std::exception& e) {
-                QMessageBox::critical(this, "Ошибка", QString("Ошибка: %1").arg(e.what()));
+                QMessageBox::critical(&dialog, "Ошибка", QString("Ошибка: %1").arg(e.what()));
             }
         });
-        layout.addRow("", calcBtn);
-
-        QDialogButtonBox buttons(QDialogButtonBox::Close);
-        layout.addRow(&buttons);
-        connect(&buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+        mainLayout->addWidget(calcBtn);
+        
+        QPushButton *closeBtn = new QPushButton("Закрыть", &dialog);
+        closeBtn->setMinimumHeight(35);
+        closeBtn->setStyleSheet(
+            "QPushButton { "
+            "    background-color: #95a5a6; "
+            "    color: white; "
+            "    font-size: 12pt; "
+            "    padding: 8px; "
+            "    border-radius: 6px; "
+            "} "
+            "QPushButton:hover { "
+            "    background-color: #7f8c8d; "
+            "}"
+        );
+        connect(closeBtn, &QPushButton::clicked, &dialog, &QDialog::accept);
+        mainLayout->addWidget(closeBtn);
 
         dialog.exec();
     }
@@ -986,15 +1148,75 @@ void MainWindow::showEfficiencyRating() {
             auto rating = manager->buildDepartmentsEfficiencyRating();
             QDialog dialog(this);
             dialog.setWindowTitle("Рейтинг отделов по эффективности");
-            dialog.resize(600, 400);
-            QVBoxLayout *layout = new QVBoxLayout(&dialog);
+            dialog.setMinimumSize(700, 500);
+            dialog.resize(700, 500);
+            
+            QVBoxLayout *mainLayout = new QVBoxLayout(&dialog);
+            mainLayout->setSpacing(15);
+            mainLayout->setContentsMargins(20, 20, 20, 20);
+            
+            QLabel *titleLabel = new QLabel("📊 Рейтинг отделов по эффективности затрат", &dialog);
+            titleLabel->setAlignment(Qt::AlignCenter);
+            titleLabel->setStyleSheet(
+                "QLabel { "
+                "    font-size: 18pt; "
+                "    font-weight: bold; "
+                "    color: #2c3e50; "
+                "    padding: 15px; "
+                "    background-color: #ecf0f1; "
+                "    border-radius: 8px; "
+                "}"
+            );
+            mainLayout->addWidget(titleLabel);
 
-            QTextEdit *textEdit = new QTextEdit(&dialog);
-            textEdit->setReadOnly(true);
-            QString text = "<h2>Рейтинг отделов по эффективности затрат</h2><table border='1'><tr><th>Место</th><th>Отдел</th><th>Эффективность</th></tr>";
+            QTableWidget *table = new QTableWidget(&dialog);
+            table->setColumnCount(4);
+            table->setHorizontalHeaderLabels({"Место", "Отдел", "Эффективность", "В процентах"});
+            
+            // Находим максимальное значение эффективности для нормализации
+            double maxEfficiency = 0.0;
+            if (!rating.empty()) {
+                maxEfficiency = rating[0].second; // Первое значение - максимальное (после сортировки)
+            }
+            table->setRowCount(static_cast<int>(rating.size()));
+            table->setAlternatingRowColors(true);
+            table->setSelectionBehavior(QAbstractItemView::SelectRows);
+            table->setEditTriggers(QAbstractItemView::NoEditTriggers);
+            table->setStyleSheet(
+                "QTableWidget { "
+                "    gridline-color: #b0b0b0; "
+                "    background-color: #ffffff; "
+                "    color: #000000; "
+                "    border: 2px solid #bdc3c7; "
+                "    border-radius: 6px; "
+                "} "
+                "QTableWidget::item { "
+                "    padding: 10px; "
+                "    color: #000000; "
+                "    background-color: #ffffff; "
+                "    font-size: 11pt; "
+                "} "
+                "QTableWidget::item:alternate { "
+                "    background-color: #f8f9fa; "
+                "    color: #000000; "
+                "} "
+                "QTableWidget::item:selected { "
+                "    background-color: #3498db; "
+                "    color: #ffffff; "
+                "} "
+                "QHeaderView::section { "
+                "    background-color: #34495e; "
+                "    color: #ffffff; "
+                "    padding: 12px; "
+                "    font-weight: bold; "
+                "    font-size: 12pt; "
+                "    border: 1px solid #2c3e50; "
+                "}"
+            );
             
             int place = 1;
-            for (const auto& pair : rating) {
+            for (size_t i = 0; i < rating.size(); ++i) {
+                const auto& pair = rating[i];
                 QString deptName = "Неизвестно";
                 for (const auto& dept : manager->getDepartments()) {
                     if (dept.getDepartmentId() == pair.first) {
@@ -1002,16 +1224,70 @@ void MainWindow::showEfficiencyRating() {
                         break;
                     }
                 }
-                text += QString("<tr><td>%1</td><td>%2 (ID: %3)</td><td>%4</td></tr>")
-                    .arg(place++).arg(deptName).arg(pair.first).arg(pair.second, 0, 'f', 6);
+                
+                QTableWidgetItem *placeItem = new QTableWidgetItem(QString::number(place));
+                placeItem->setTextAlignment(Qt::AlignCenter);
+                if (place == 1) {
+                    placeItem->setBackground(QColor(255, 215, 0));
+                    placeItem->setForeground(QColor(0, 0, 0));
+                } else if (place == 2) {
+                    placeItem->setBackground(QColor(192, 192, 192));
+                    placeItem->setForeground(QColor(0, 0, 0));
+                } else if (place == 3) {
+                    placeItem->setBackground(QColor(205, 127, 50));
+                    placeItem->setForeground(QColor(255, 255, 255));
+                }
+                table->setItem(static_cast<int>(i), 0, placeItem);
+                
+                QTableWidgetItem *deptItem = new QTableWidgetItem(QString("%1 (ID: %2)").arg(deptName).arg(pair.first));
+                table->setItem(static_cast<int>(i), 1, deptItem);
+                
+                QTableWidgetItem *effItem = new QTableWidgetItem(QString::number(pair.second, 'f', 6));
+                effItem->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+                table->setItem(static_cast<int>(i), 2, effItem);
+                
+                // Расчет эффективности в процентах
+                double percentage = 0.0;
+                if (maxEfficiency > 0.0) {
+                    percentage = (pair.second / maxEfficiency) * 100.0;
+                }
+                QTableWidgetItem *percentItem = new QTableWidgetItem(QString("%1%").arg(percentage, 0, 'f', 2));
+                percentItem->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+                if (percentage >= 90.0) {
+                    percentItem->setForeground(QColor(27, 158, 119)); // Зеленый для высоких значений
+                } else if (percentage >= 70.0) {
+                    percentItem->setForeground(QColor(52, 152, 219)); // Синий для средних значений
+                } else {
+                    percentItem->setForeground(QColor(231, 76, 60)); // Красный для низких значений
+                }
+                table->setItem(static_cast<int>(i), 3, percentItem);
+                
+                place++;
             }
-            text += "</table>";
-            textEdit->setHtml(text);
-            layout->addWidget(textEdit);
+            
+            table->resizeColumnsToContents();
+            table->setColumnWidth(0, 80);
+            table->setColumnWidth(1, 250);
+            table->setColumnWidth(2, 150);
+            table->setColumnWidth(3, 120);
+            mainLayout->addWidget(table);
 
-            QDialogButtonBox buttons(QDialogButtonBox::Ok);
-            layout->addWidget(&buttons);
-            connect(&buttons, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+            QPushButton *closeBtn = new QPushButton("Закрыть", &dialog);
+            closeBtn->setMinimumHeight(40);
+            closeBtn->setStyleSheet(
+                "QPushButton { "
+                "    background-color: #95a5a6; "
+                "    color: white; "
+                "    font-size: 12pt; "
+                "    padding: 10px; "
+                "    border-radius: 6px; "
+                "} "
+                "QPushButton:hover { "
+                "    background-color: #7f8c8d; "
+                "}"
+            );
+            connect(closeBtn, &QPushButton::clicked, &dialog, &QDialog::accept);
+            mainLayout->addWidget(closeBtn);
 
             dialog.exec();
         } catch (const std::exception& e) {
@@ -1124,7 +1400,8 @@ void MainWindow::refreshAll() {
 
 void MainWindow::setupUI() {
         setWindowTitle("Система кадрового учета");
-        setMinimumSize(1200, 700);
+        setMinimumSize(1400, 800);
+        resize(1400, 800);
 
         QWidget *central = new QWidget(this);
         setCentralWidget(central);

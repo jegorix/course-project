@@ -127,6 +127,11 @@ public:
     bool canUndo() const;
     bool undoLastAction();
     std::string getLastUndoDescription() const;
+    void pushUndo(std::function<void()> undoAction, const std::string& description);
+    
+    // Вспомогательный метод для восстановления сотрудника из копии (для undo)
+    void restoreEmployeeFromCopy(int employeeId, std::shared_ptr<Employee> employeeCopy, const HireDate& hireDateCopy);
+    std::shared_ptr<Employee> cloneEmployee(const Employee& source) const;
 
     // Сброс данных
     void clearAllEmployees();
@@ -170,15 +175,11 @@ private:
     void savePositions() const;
     void saveHireDates() const;
 
-    std::shared_ptr<Employee> cloneEmployee(const Employee& source) const;
-
     void registerEmployee(const EmployeeRecord& record);
     void unregisterEmployee(int employeeId);
 
     void ensureDepartmentContainsEmployee(int departmentId, int employeeId);
     void removeEmployeeFromDepartment(int departmentId, int employeeId);
-
-    void pushUndo(std::function<void()> undoAction, const std::string& description);
 
     int generateEmployeeId();
     int generateDepartmentId();

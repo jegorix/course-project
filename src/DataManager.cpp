@@ -1059,6 +1059,41 @@ std::string DataManager::getLastUndoDescription() const {
     return undoStack.back().description;
 }
 
+void DataManager::restoreEmployeeFromCopy(int employeeId, std::shared_ptr<Employee> employeeCopy, const HireDate& hireDateCopy) {
+    EmployeeRecord* record = findEmployeeRecord(employeeId);
+    if (!record) return;
+    
+    // Сохраняем старый отдел
+    int oldDeptId = record->employee->getDepartmentId();
+    
+    // Восстанавливаем сотрудника из копии
+    record->employee = employeeCopy;
+    record->hireDate = hireDateCopy;
+    
+    // Обновляем отдел, если он изменился
+    int newDeptId = employeeCopy->getDepartmentId();
+    if (oldDeptId != newDeptId) {
+        removeEmployeeFromDepartment(oldDeptId, employeeId);
+        ensureDepartmentContainsEmployee(newDeptId, employeeId);
+    }
+    
+    // Восстанавливаем подчиненных для менеджера
+    if (auto oldManager = std::dynamic_pointer_cast<Manager>(employeeCopy)) {
+        if (auto currentManager = std::dynamic_pointer_cast<Manager>(record->employee)) {
+            // Очищаем текущих подчиненных
+            auto currentSubs = currentManager->getSubordinates();
+            for (int subId : currentSubs) {
+                currentManager->removeSubordinate(subId);
+            }
+            // Восстанавливаем старых подчиненных
+            auto oldSubs = oldManager->getSubordinates();
+            for (int subId : oldSubs) {
+                currentManager->addSubordinate(subId);
+            }
+        }
+    }
+}
+
 // Сброс данных
 void DataManager::clearAllEmployees() {
     if (undoInProgress) return;
