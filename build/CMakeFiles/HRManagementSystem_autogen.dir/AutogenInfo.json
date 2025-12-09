@@ -464,7 +464,7 @@
 	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
 	"INCLUDE_DIR" : "/Users/macbook/Desktop/\u043a\u0443\u0440\u0441\u043e\u0432\u0430\u044f_25.11.25/build/HRManagementSystem_autogen/include",
 	"MOC_COMPILATION_FILE" : "/Users/macbook/Desktop/\u043a\u0443\u0440\u0441\u043e\u0432\u0430\u044f_25.11.25/build/HRManagementSystem_autogen/mocs_compilation.cpp",
-	"MOC_DEFINITIONS" : [ "QT_CORE_LIB", "QT_GUI_LIB", "QT_NO_DEBUG", "QT_WIDGETS_LIB" ],
+	"MOC_DEFINITIONS" : [ "QT_CORE_LIB", "QT_GUI_LIB", "QT_WIDGETS_LIB" ],
 	"MOC_DEPEND_FILTERS" : 
 	[
 		[
@@ -503,7 +503,7 @@
 	"MOC_PATH_PREFIX" : false,
 	"MOC_PREDEFS_CMD" : 
 	[
-		"/usr/bin/c++",
+		"/usr/bin/clang++",
 		"-std=gnu++17",
 		"-w",
 		"-dM",

@@ -72,7 +72,7 @@ HRManagementSystem_autogen/timestamp: /opt/homebrew/share/qt/libexec/moc
 HRManagementSystem_autogen/timestamp: /opt/homebrew/share/qt/libexec/uic
 HRManagementSystem_autogen/timestamp: CMakeFiles/HRManagementSystem_autogen.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/Users/macbook/Desktop/курсовая_25.11.25/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Automatic MOC and UIC for target HRManagementSystem"
-	/opt/homebrew/bin/cmake -E cmake_autogen /Users/macbook/Desktop/курсовая_25.11.25/build/CMakeFiles/HRManagementSystem_autogen.dir/AutogenInfo.json ""
+	/opt/homebrew/bin/cmake -E cmake_autogen /Users/macbook/Desktop/курсовая_25.11.25/build/CMakeFiles/HRManagementSystem_autogen.dir/AutogenInfo.json Debug
 	/opt/homebrew/bin/cmake -E touch /Users/macbook/Desktop/курсовая_25.11.25/build/HRManagementSystem_autogen/timestamp
 
 CMakeFiles/HRManagementSystem_autogen.dir/codegen:

@@ -1,0 +1,68 @@
+[
+{
+  "directory": "/Users/macbook/Desktop/курсовая_25.11.25/build",
+  "command": "/usr/bin/clang++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -I/Users/macbook/Desktop/курсовая_25.11.25/build/HRManagementSystem_autogen/include -I/Users/macbook/Desktop/курсовая_25.11.25/include -I/Users/macbook/Desktop/курсовая_25.11.25/src -isystem /opt/homebrew/lib/QtCore.framework/Headers -iframework /opt/homebrew/lib -isystem /opt/homebrew/share/qt/mkspecs/macx-clang -isystem /opt/homebrew/include -isystem /opt/homebrew/lib/QtWidgets.framework/Headers -isystem /opt/homebrew/lib/QtGui.framework/Headers -g -std=gnu++17 -arch arm64 -o CMakeFiles/HRManagementSystem.dir/HRManagementSystem_autogen/mocs_compilation.cpp.o -c /Users/macbook/Desktop/курсовая_25.11.25/build/HRManagementSystem_autogen/mocs_compilation.cpp",
+  "file": "/Users/macbook/Desktop/курсовая_25.11.25/build/HRManagementSystem_autogen/mocs_compilation.cpp",
+  "output": "CMakeFiles/HRManagementSystem.dir/HRManagementSystem_autogen/mocs_compilation.cpp.o"
+},
+{
+  "directory": "/Users/macbook/Desktop/курсовая_25.11.25/build",
+  "command": "/usr/bin/clang++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -I/Users/macbook/Desktop/курсовая_25.11.25/build/HRManagementSystem_autogen/include -I/Users/macbook/Desktop/курсовая_25.11.25/include -I/Users/macbook/Desktop/курсовая_25.11.25/src -isystem /opt/homebrew/lib/QtCore.framework/Headers -iframework /opt/homebrew/lib -isystem /opt/homebrew/share/qt/mkspecs/macx-clang -isystem /opt/homebrew/include -isystem /opt/homebrew/lib/QtWidgets.framework/Headers -isystem /opt/homebrew/lib/QtGui.framework/Headers -g -std=gnu++17 -arch arm64 -o CMakeFiles/HRManagementSystem.dir/src/Person.cpp.o -c /Users/macbook/Desktop/курсовая_25.11.25/src/Person.cpp",
+  "file": "/Users/macbook/Desktop/курсовая_25.11.25/src/Person.cpp",
+  "output": "CMakeFiles/HRManagementSystem.dir/src/Person.cpp.o"
+},
+{
+  "directory": "/Users/macbook/Desktop/курсовая_25.11.25/build",
+  "command": "/usr/bin/clang++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -I/Users/macbook/Desktop/курсовая_25.11.25/build/HRManagementSystem_autogen/include -I/Users/macbook/Desktop/курсовая_25.11.25/include -I/Users/macbook/Desktop/курсовая_25.11.25/src -isystem /opt/homebrew/lib/QtCore.framework/Headers -iframework /opt/homebrew/lib -isystem /opt/homebrew/share/qt/mkspecs/macx-clang -isystem /opt/homebrew/include -isystem /opt/homebrew/lib/QtWidgets.framework/Headers -isystem /opt/homebrew/lib/QtGui.framework/Headers -g -std=gnu++17 -arch arm64 -o CMakeFiles/HRManagementSystem.dir/src/Employee.cpp.o -c /Users/macbook/Desktop/курсовая_25.11.25/src/Employee.cpp",
+  "file": "/Users/macbook/Desktop/курсовая_25.11.25/src/Employee.cpp",
+  "output": "CMakeFiles/HRManagementSystem.dir/src/Employee.cpp.o"
+},
+{
+  "directory": "/Users/macbook/Desktop/курсовая_25.11.25/build",
+  "command": "/usr/bin/clang++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -I/Users/macbook/Desktop/курсовая_25.11.25/build/HRManagementSystem_autogen/include -I/Users/macbook/Desktop/курсовая_25.11.25/include -I/Users/macbook/Desktop/курсовая_25.11.25/src -isystem /opt/homebrew/lib/QtCore.framework/Headers -iframework /opt/homebrew/lib -isystem /opt/homebrew/share/qt/mkspecs/macx-clang -isystem /opt/homebrew/include -isystem /opt/homebrew/lib/QtWidgets.framework/Headers -isystem /opt/homebrew/lib/QtGui.framework/Headers -g -std=gnu++17 -arch arm64 -o CMakeFiles/HRManagementSystem.dir/src/Worker.cpp.o -c /Users/macbook/Desktop/курсовая_25.11.25/src/Worker.cpp",
+  "file": "/Users/macbook/Desktop/курсовая_25.11.25/src/Worker.cpp",
+  "output": "CMakeFiles/HRManagementSystem.dir/src/Worker.cpp.o"
+},
+{
+  "directory": "/Users/macbook/Desktop/курсовая_25.11.25/build",
+  "command": "/usr/bin/clang++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -I/Users/macbook/Desktop/курсовая_25.11.25/build/HRManagementSystem_autogen/include -I/Users/macbook/Desktop/курсовая_25.11.25/include -I/Users/macbook/Desktop/курсовая_25.11.25/src -isystem /opt/homebrew/lib/QtCore.framework/Headers -iframework /opt/homebrew/lib -isystem /opt/homebrew/share/qt/mkspecs/macx-clang -isystem /opt/homebrew/include -isystem /opt/homebrew/lib/QtWidgets.framework/Headers -isystem /opt/homebrew/lib/QtGui.framework/Headers -g -std=gnu++17 -arch arm64 -o CMakeFiles/HRManagementSystem.dir/src/Manager.cpp.o -c /Users/macbook/Desktop/курсовая_25.11.25/src/Manager.cpp",
+  "file": "/Users/macbook/Desktop/курсовая_25.11.25/src/Manager.cpp",
+  "output": "CMakeFiles/HRManagementSystem.dir/src/Manager.cpp.o"
+},
+{
+  "directory": "/Users/macbook/Desktop/курсовая_25.11.25/build",
+  "command": "/usr/bin/clang++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -I/Users/macbook/Desktop/курсовая_25.11.25/build/HRManagementSystem_autogen/include -I/Users/macbook/Desktop/курсовая_25.11.25/include -I/Users/macbook/Desktop/курсовая_25.11.25/src -isystem /opt/homebrew/lib/QtCore.framework/Headers -iframework /opt/homebrew/lib -isystem /opt/homebrew/share/qt/mkspecs/macx-clang -isystem /opt/homebrew/include -isystem /opt/homebrew/lib/QtWidgets.framework/Headers -isystem /opt/homebrew/lib/QtGui.framework/Headers -g -std=gnu++17 -arch arm64 -o CMakeFiles/HRManagementSystem.dir/src/Department.cpp.o -c /Users/macbook/Desktop/курсовая_25.11.25/src/Department.cpp",
+  "file": "/Users/macbook/Desktop/курсовая_25.11.25/src/Department.cpp",
+  "output": "CMakeFiles/HRManagementSystem.dir/src/Department.cpp.o"
+},
+{
+  "directory": "/Users/macbook/Desktop/курсовая_25.11.25/build",
+  "command": "/usr/bin/clang++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -I/Users/macbook/Desktop/курсовая_25.11.25/build/HRManagementSystem_autogen/include -I/Users/macbook/Desktop/курсовая_25.11.25/include -I/Users/macbook/Desktop/курсовая_25.11.25/src -isystem /opt/homebrew/lib/QtCore.framework/Headers -iframework /opt/homebrew/lib -isystem /opt/homebrew/share/qt/mkspecs/macx-clang -isystem /opt/homebrew/include -isystem /opt/homebrew/lib/QtWidgets.framework/Headers -isystem /opt/homebrew/lib/QtGui.framework/Headers -g -std=gnu++17 -arch arm64 -o CMakeFiles/HRManagementSystem.dir/src/Position.cpp.o -c /Users/macbook/Desktop/курсовая_25.11.25/src/Position.cpp",
+  "file": "/Users/macbook/Desktop/курсовая_25.11.25/src/Position.cpp",
+  "output": "CMakeFiles/HRManagementSystem.dir/src/Position.cpp.o"
+},
+{
+  "directory": "/Users/macbook/Desktop/курсовая_25.11.25/build",
+  "command": "/usr/bin/clang++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -I/Users/macbook/Desktop/курсовая_25.11.25/build/HRManagementSystem_autogen/include -I/Users/macbook/Desktop/курсовая_25.11.25/include -I/Users/macbook/Desktop/курсовая_25.11.25/src -isystem /opt/homebrew/lib/QtCore.framework/Headers -iframework /opt/homebrew/lib -isystem /opt/homebrew/share/qt/mkspecs/macx-clang -isystem /opt/homebrew/include -isystem /opt/homebrew/lib/QtWidgets.framework/Headers -isystem /opt/homebrew/lib/QtGui.framework/Headers -g -std=gnu++17 -arch arm64 -o CMakeFiles/HRManagementSystem.dir/src/HireDate.cpp.o -c /Users/macbook/Desktop/курсовая_25.11.25/src/HireDate.cpp",
+  "file": "/Users/macbook/Desktop/курсовая_25.11.25/src/HireDate.cpp",
+  "output": "CMakeFiles/HRManagementSystem.dir/src/HireDate.cpp.o"
+},
+{
+  "directory": "/Users/macbook/Desktop/курсовая_25.11.25/build",
+  "command": "/usr/bin/clang++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -I/Users/macbook/Desktop/курсовая_25.11.25/build/HRManagementSystem_autogen/include -I/Users/macbook/Desktop/курсовая_25.11.25/include -I/Users/macbook/Desktop/курсовая_25.11.25/src -isystem /opt/homebrew/lib/QtCore.framework/Headers -iframework /opt/homebrew/lib -isystem /opt/homebrew/share/qt/mkspecs/macx-clang -isystem /opt/homebrew/include -isystem /opt/homebrew/lib/QtWidgets.framework/Headers -isystem /opt/homebrew/lib/QtGui.framework/Headers -g -std=gnu++17 -arch arm64 -o CMakeFiles/HRManagementSystem.dir/src/DataManager.cpp.o -c /Users/macbook/Desktop/курсовая_25.11.25/src/DataManager.cpp",
+  "file": "/Users/macbook/Desktop/курсовая_25.11.25/src/DataManager.cpp",
+  "output": "CMakeFiles/HRManagementSystem.dir/src/DataManager.cpp.o"
+},
+{
+  "directory": "/Users/macbook/Desktop/курсовая_25.11.25/build",
+  "command": "/usr/bin/clang++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -I/Users/macbook/Desktop/курсовая_25.11.25/build/HRManagementSystem_autogen/include -I/Users/macbook/Desktop/курсовая_25.11.25/include -I/Users/macbook/Desktop/курсовая_25.11.25/src -isystem /opt/homebrew/lib/QtCore.framework/Headers -iframework /opt/homebrew/lib -isystem /opt/homebrew/share/qt/mkspecs/macx-clang -isystem /opt/homebrew/include -isystem /opt/homebrew/lib/QtWidgets.framework/Headers -isystem /opt/homebrew/lib/QtGui.framework/Headers -g -std=gnu++17 -arch arm64 -o CMakeFiles/HRManagementSystem.dir/src/MainWindow.cpp.o -c /Users/macbook/Desktop/курсовая_25.11.25/src/MainWindow.cpp",
+  "file": "/Users/macbook/Desktop/курсовая_25.11.25/src/MainWindow.cpp",
+  "output": "CMakeFiles/HRManagementSystem.dir/src/MainWindow.cpp.o"
+},
+{
+  "directory": "/Users/macbook/Desktop/курсовая_25.11.25/build",
+  "command": "/usr/bin/clang++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -I/Users/macbook/Desktop/курсовая_25.11.25/build/HRManagementSystem_autogen/include -I/Users/macbook/Desktop/курсовая_25.11.25/include -I/Users/macbook/Desktop/курсовая_25.11.25/src -isystem /opt/homebrew/lib/QtCore.framework/Headers -iframework /opt/homebrew/lib -isystem /opt/homebrew/share/qt/mkspecs/macx-clang -isystem /opt/homebrew/include -isystem /opt/homebrew/lib/QtWidgets.framework/Headers -isystem /opt/homebrew/lib/QtGui.framework/Headers -g -std=gnu++17 -arch arm64 -o CMakeFiles/HRManagementSystem.dir/src/main.cpp.o -c /Users/macbook/Desktop/курсовая_25.11.25/src/main.cpp",
+  "file": "/Users/macbook/Desktop/курсовая_25.11.25/src/main.cpp",
+  "output": "CMakeFiles/HRManagementSystem.dir/src/main.cpp.o"
+}
+]
