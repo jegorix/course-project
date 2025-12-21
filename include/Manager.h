@@ -10,6 +10,7 @@
  */
 class Manager : public Employee {
 private:
+    int positionId = 0;        // Номер должности руководителя
     std::vector<int> subordinates;  // Номера подчиненных сотрудников
 
 public:
@@ -17,10 +18,14 @@ public:
     Manager();
     Manager(int employeeId, const std::string& firstName, 
             const std::string& lastName, int departmentId, 
-            double salary, const std::vector<int>& subordinates);
+            double salary, int positionId, const std::vector<int>& subordinates);
     
     // Деструктор
     ~Manager();
+
+    // Должность
+    int getPositionId() const;
+    void setPositionId(int positionId);
 
     // Методы для работы с подчиненными
     void addSubordinate(int subordinateId);
@@ -35,4 +40,3 @@ public:
 };
 
 #endif // MANAGER_H
-

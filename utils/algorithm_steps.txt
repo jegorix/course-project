@@ -1,0 +1,43 @@
+Алгоритм по шагам для метода DataManager::buildDepartmentsEfficiencyRating
+Шаг 1. Начало.
+Входные данные:
+int departmentId внутри каждой записи отдела; контейнер departments со списком отделов; контейнер employees с данными сотрудников (departmentId, salary).
+Выходные данные:
+std::vector<std::pair<int, double>> rating – пары (departmentId, efficiency), отсортированные по убыванию эффективности.
+Шаг 2. Создать пустой вектор rating.
+Шаг 3. Для каждого отдела в контейнере departments:
+  • получить deptId;
+  • инициализировать totalSalary = 0.0, count = 0.
+Шаг 4. Пройти по всем сотрудникам в контейнере employees:
+  • если запись пуста, пропустить;
+  • если employee.departmentId == deptId:
+    – добавить employee.salary к totalSalary;
+    – увеличить count на 1.
+Шаг 5. Определить efficiency:
+  • если count == 0 или totalSalary <= 0.0, установить efficiency = 0.0;
+  • иначе вычислить efficiency = static_cast<double>(count) / totalSalary.
+Шаг 6. Добавить пару (deptId, efficiency) в rating.
+Шаг 7. Повторить шаги 3–6 для всех отделов.
+Шаг 8. Отсортировать rating по убыванию efficiency с помощью std::sort и компаратора.
+Шаг 9. Вернуть rating.
+Шаг 10. Конец алгоритма.
+
+Алгоритм по шагам для метода DataManager::calculateAverageSalaryForDepartment
+Шаг 1. Начало.
+Входные данные:
+int departmentId – идентификатор отдела; контейнер employees с окладами и привязкой сотрудников к отделам.
+Выходные данные:
+double averageSalary – средняя заработная плата сотрудников выбранного отдела (0.0 при отсутствии данных).
+Шаг 2. Проверить существование отдела через findDepartment(departmentId).
+  • если отдел не найден, вернуть 0.0 и завершить работу.
+Шаг 3. Инициализировать sumSalary = 0.0 и count = 0.
+Шаг 4. Пройти по всем сотрудникам в контейнере employees:
+  • если employee.departmentId == departmentId:
+    – добавить employee.getSalary() к sumSalary;
+    – увеличить count на 1.
+Шаг 5. Проверить count:
+  • если count == 0, вернуть 0.0;
+  • иначе перейти к расчету.
+Шаг 6. Вычислить averageSalary = sumSalary / count.
+Шаг 7. Вернуть averageSalary.
+Шаг 8. Конец алгоритма.

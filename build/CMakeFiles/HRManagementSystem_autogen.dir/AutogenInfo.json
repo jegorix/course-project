@@ -401,6 +401,12 @@
 	"HEADERS" : 
 	[
 		[
+			"/Users/macbook/Desktop/\u043a\u0443\u0440\u0441\u043e\u0432\u0430\u044f_25.11.25/include/Algorithm.h",
+			"MU",
+			"6YEA5652QU/moc_Algorithm.cpp",
+			null
+		],
+		[
 			"/Users/macbook/Desktop/\u043a\u0443\u0440\u0441\u043e\u0432\u0430\u044f_25.11.25/include/DataManager.h",
 			"MU",
 			"6YEA5652QU/moc_DataManager.cpp",
@@ -416,6 +422,18 @@
 			"/Users/macbook/Desktop/\u043a\u0443\u0440\u0441\u043e\u0432\u0430\u044f_25.11.25/include/Employee.h",
 			"MU",
 			"6YEA5652QU/moc_Employee.cpp",
+			null
+		],
+		[
+			"/Users/macbook/Desktop/\u043a\u0443\u0440\u0441\u043e\u0432\u0430\u044f_25.11.25/include/Exceptions.h",
+			"MU",
+			"6YEA5652QU/moc_Exceptions.cpp",
+			null
+		],
+		[
+			"/Users/macbook/Desktop/\u043a\u0443\u0440\u0441\u043e\u0432\u0430\u044f_25.11.25/include/FileManager.h",
+			"MU",
+			"6YEA5652QU/moc_FileManager.cpp",
 			null
 		],
 		[
@@ -524,6 +542,11 @@
 	"SOURCES" : 
 	[
 		[
+			"/Users/macbook/Desktop/\u043a\u0443\u0440\u0441\u043e\u0432\u0430\u044f_25.11.25/src/Algorithm.cpp",
+			"MU",
+			null
+		],
+		[
 			"/Users/macbook/Desktop/\u043a\u0443\u0440\u0441\u043e\u0432\u0430\u044f_25.11.25/src/DataManager.cpp",
 			"MU",
 			null
@@ -535,6 +558,11 @@
 		],
 		[
 			"/Users/macbook/Desktop/\u043a\u0443\u0440\u0441\u043e\u0432\u0430\u044f_25.11.25/src/Employee.cpp",
+			"MU",
+			null
+		],
+		[
+			"/Users/macbook/Desktop/\u043a\u0443\u0440\u0441\u043e\u0432\u0430\u044f_25.11.25/src/FileManager.cpp",
 			"MU",
 			null
 		],

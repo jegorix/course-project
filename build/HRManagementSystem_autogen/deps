@@ -732,9 +732,12 @@ HRManagementSystem_autogen/timestamp: \
 	/Users/macbook/Desktop/курсовая_25.11.25/build/CMakeFiles/4.2.0/CMakeCXXCompiler.cmake \
 	/Users/macbook/Desktop/курсовая_25.11.25/build/CMakeFiles/4.2.0/CMakeSystem.cmake \
 	/Users/macbook/Desktop/курсовая_25.11.25/build/HRManagementSystem_autogen/moc_predefs.h \
+	/Users/macbook/Desktop/курсовая_25.11.25/include/Algorithm.h \
 	/Users/macbook/Desktop/курсовая_25.11.25/include/DataManager.h \
 	/Users/macbook/Desktop/курсовая_25.11.25/include/Department.h \
 	/Users/macbook/Desktop/курсовая_25.11.25/include/Employee.h \
+	/Users/macbook/Desktop/курсовая_25.11.25/include/Exceptions.h \
+	/Users/macbook/Desktop/курсовая_25.11.25/include/FileManager.h \
 	/Users/macbook/Desktop/курсовая_25.11.25/include/HireDate.h \
 	/Users/macbook/Desktop/курсовая_25.11.25/include/MainWindow.h \
 	/Users/macbook/Desktop/курсовая_25.11.25/include/Manager.h \
@@ -742,9 +745,11 @@ HRManagementSystem_autogen/timestamp: \
 	/Users/macbook/Desktop/курсовая_25.11.25/include/Position.h \
 	/Users/macbook/Desktop/курсовая_25.11.25/include/RecordCollection.h \
 	/Users/macbook/Desktop/курсовая_25.11.25/include/Worker.h \
+	/Users/macbook/Desktop/курсовая_25.11.25/src/Algorithm.cpp \
 	/Users/macbook/Desktop/курсовая_25.11.25/src/DataManager.cpp \
 	/Users/macbook/Desktop/курсовая_25.11.25/src/Department.cpp \
 	/Users/macbook/Desktop/курсовая_25.11.25/src/Employee.cpp \
+	/Users/macbook/Desktop/курсовая_25.11.25/src/FileManager.cpp \
 	/Users/macbook/Desktop/курсовая_25.11.25/src/HireDate.cpp \
 	/Users/macbook/Desktop/курсовая_25.11.25/src/MainWindow.cpp \
 	/Users/macbook/Desktop/курсовая_25.11.25/src/Manager.cpp \

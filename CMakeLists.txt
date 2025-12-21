@@ -21,6 +21,8 @@ set(SOURCES
     src/Department.cpp
     src/Position.cpp
     src/HireDate.cpp
+    src/Algorithm.cpp
+    src/FileManager.cpp
     src/DataManager.cpp
     src/MainWindow.cpp
     src/main.cpp
@@ -28,6 +30,7 @@ set(SOURCES
 
 # Заголовочные файлы
 set(HEADERS
+    include/Exceptions.h
     include/Person.h
     include/Employee.h
     include/Worker.h
@@ -35,6 +38,8 @@ set(HEADERS
     include/Department.h
     include/Position.h
     include/HireDate.h
+    include/Algorithm.h
+    include/FileManager.h
     include/DataManager.h
     include/RecordCollection.h
     include/MainWindow.h
@@ -54,4 +59,3 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/src
 )
-

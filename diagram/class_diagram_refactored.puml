@@ -1,0 +1,143 @@
+@startuml
+left to right direction
+skinparam style strictuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam backgroundColor #FFFFFF
+skinparam classBackgroundColor #FFFFFF
+skinparam packageBackgroundColor #FFFFFF
+
+package "Domain" {
+class Person {
+  - firstName : std::string
+  - lastName  : std::string
+  + getFullName() : std::string
+  + displayInfo() : void
+}
+
+class Employee {
+  - employeeId : int
+  - departmentId : int
+  - salary : double
+  + calculateTotalIncome() : double
+}
+
+class Worker {
+  - positionId : int
+  - bonus : double
+}
+
+class Manager {
+  - subordinates : std::vector<int>
+}
+
+class Department {
+  - departmentId : int
+  - departmentName : std::string
+  - managerId : int
+  - employees : std::vector<int>
+}
+
+class Position {
+  - positionId : int
+  - positionName : std::string
+  - workHoursPerWeek : int
+}
+
+class HireDate {
+  - employeeId : int
+  - day : int
+  - month : int
+  - year : int
+  - hour : int
+  - minute : int
+}
+}
+
+package "Core" {
+class "RecordCollection<T>" as RecordCollection {
+  - records : std::vector<T>
+}
+
+class DataManager {
+  - employeesPath : std::string
+  - departmentsPath : std::string
+  - positionsPath : std::string
+  - hiresPath : std::string
+  - employees : RecordCollection<EmployeeRecord>
+  - departments : RecordCollection<Department>
+  - positions : RecordCollection<Position>
+  - employeeIndex : std::unordered_map<int, size_t>
+  - departmentIndex : std::unordered_map<int, size_t>
+  - positionIndex : std::unordered_map<int, size_t>
+  - undoStack : std::vector<UndoCommand>
+}
+
+class FileManager {
+  + loadAll(dm)
+  + saveAll(dm)
+}
+
+class Algorithm {
+  + findEmployees(...)
+  + sortEmployees(...)
+  + calculateAverageSalaryForDepartment(...)
+  + buildDepartmentsEfficiencyRating(...)
+  + buildDepartmentsPayrollStats(...)
+  + findEmployeeRecord(...)
+  + findDepartment(...)
+  + findPosition(...)
+}
+}
+
+package "UI" {
+class MainWindow {
+  - manager : std::unique_ptr<DataManager>
+  - algorithm : std::unique_ptr<Algorithm>
+}
+}
+
+package "Exceptions" {
+class AppException
+class ValidationException
+class EntityNotFoundException
+class OperationNotAllowedException
+class FileAccessException
+class DataFormatException
+class CollectionBoundsException
+}
+
+class EmployeeRecord <<struct>>
+class EmployeeSearchFilter <<struct>>
+enum EmployeeSortKey
+
+Person <|-- Employee
+Employee <|-- Worker
+Employee <|-- Manager
+Department "1" o-- "0..*" Employee
+Department "1" o-- "0..1" Manager
+Worker --> Position
+
+EmployeeRecord *-- Employee
+EmployeeRecord *-- HireDate
+
+RecordCollection o-- "records" EmployeeRecord
+RecordCollection o-- "records" Department
+RecordCollection o-- "records" Position
+
+DataManager --> FileManager
+DataManager --> Algorithm
+MainWindow --> DataManager
+MainWindow --> Algorithm
+
+Algorithm ..> RecordCollection
+FileManager ..> RecordCollection
+
+AppException <|-- ValidationException
+AppException <|-- EntityNotFoundException
+AppException <|-- OperationNotAllowedException
+AppException <|-- FileAccessException
+AppException <|-- DataFormatException
+AppException <|-- CollectionBoundsException
+
+@enduml

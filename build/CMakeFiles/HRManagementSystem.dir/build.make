@@ -191,10 +191,38 @@ CMakeFiles/HRManagementSystem.dir/src/HireDate.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/HRManagementSystem.dir/src/HireDate.cpp.s"
 	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/macbook/Desktop/курсовая_25.11.25/src/HireDate.cpp -o CMakeFiles/HRManagementSystem.dir/src/HireDate.cpp.s
 
+CMakeFiles/HRManagementSystem.dir/src/Algorithm.cpp.o: CMakeFiles/HRManagementSystem.dir/flags.make
+CMakeFiles/HRManagementSystem.dir/src/Algorithm.cpp.o: /Users/macbook/Desktop/курсовая_25.11.25/src/Algorithm.cpp
+CMakeFiles/HRManagementSystem.dir/src/Algorithm.cpp.o: CMakeFiles/HRManagementSystem.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/macbook/Desktop/курсовая_25.11.25/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/HRManagementSystem.dir/src/Algorithm.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HRManagementSystem.dir/src/Algorithm.cpp.o -MF CMakeFiles/HRManagementSystem.dir/src/Algorithm.cpp.o.d -o CMakeFiles/HRManagementSystem.dir/src/Algorithm.cpp.o -c /Users/macbook/Desktop/курсовая_25.11.25/src/Algorithm.cpp
+
+CMakeFiles/HRManagementSystem.dir/src/Algorithm.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/HRManagementSystem.dir/src/Algorithm.cpp.i"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/macbook/Desktop/курсовая_25.11.25/src/Algorithm.cpp > CMakeFiles/HRManagementSystem.dir/src/Algorithm.cpp.i
+
+CMakeFiles/HRManagementSystem.dir/src/Algorithm.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/HRManagementSystem.dir/src/Algorithm.cpp.s"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/macbook/Desktop/курсовая_25.11.25/src/Algorithm.cpp -o CMakeFiles/HRManagementSystem.dir/src/Algorithm.cpp.s
+
+CMakeFiles/HRManagementSystem.dir/src/FileManager.cpp.o: CMakeFiles/HRManagementSystem.dir/flags.make
+CMakeFiles/HRManagementSystem.dir/src/FileManager.cpp.o: /Users/macbook/Desktop/курсовая_25.11.25/src/FileManager.cpp
+CMakeFiles/HRManagementSystem.dir/src/FileManager.cpp.o: CMakeFiles/HRManagementSystem.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/macbook/Desktop/курсовая_25.11.25/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/HRManagementSystem.dir/src/FileManager.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HRManagementSystem.dir/src/FileManager.cpp.o -MF CMakeFiles/HRManagementSystem.dir/src/FileManager.cpp.o.d -o CMakeFiles/HRManagementSystem.dir/src/FileManager.cpp.o -c /Users/macbook/Desktop/курсовая_25.11.25/src/FileManager.cpp
+
+CMakeFiles/HRManagementSystem.dir/src/FileManager.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/HRManagementSystem.dir/src/FileManager.cpp.i"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/macbook/Desktop/курсовая_25.11.25/src/FileManager.cpp > CMakeFiles/HRManagementSystem.dir/src/FileManager.cpp.i
+
+CMakeFiles/HRManagementSystem.dir/src/FileManager.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/HRManagementSystem.dir/src/FileManager.cpp.s"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/macbook/Desktop/курсовая_25.11.25/src/FileManager.cpp -o CMakeFiles/HRManagementSystem.dir/src/FileManager.cpp.s
+
 CMakeFiles/HRManagementSystem.dir/src/DataManager.cpp.o: CMakeFiles/HRManagementSystem.dir/flags.make
 CMakeFiles/HRManagementSystem.dir/src/DataManager.cpp.o: /Users/macbook/Desktop/курсовая_25.11.25/src/DataManager.cpp
 CMakeFiles/HRManagementSystem.dir/src/DataManager.cpp.o: CMakeFiles/HRManagementSystem.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/macbook/Desktop/курсовая_25.11.25/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/HRManagementSystem.dir/src/DataManager.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/macbook/Desktop/курсовая_25.11.25/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/HRManagementSystem.dir/src/DataManager.cpp.o"
 	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HRManagementSystem.dir/src/DataManager.cpp.o -MF CMakeFiles/HRManagementSystem.dir/src/DataManager.cpp.o.d -o CMakeFiles/HRManagementSystem.dir/src/DataManager.cpp.o -c /Users/macbook/Desktop/курсовая_25.11.25/src/DataManager.cpp
 
 CMakeFiles/HRManagementSystem.dir/src/DataManager.cpp.i: cmake_force
@@ -208,7 +236,7 @@ CMakeFiles/HRManagementSystem.dir/src/DataManager.cpp.s: cmake_force
 CMakeFiles/HRManagementSystem.dir/src/MainWindow.cpp.o: CMakeFiles/HRManagementSystem.dir/flags.make
 CMakeFiles/HRManagementSystem.dir/src/MainWindow.cpp.o: /Users/macbook/Desktop/курсовая_25.11.25/src/MainWindow.cpp
 CMakeFiles/HRManagementSystem.dir/src/MainWindow.cpp.o: CMakeFiles/HRManagementSystem.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/macbook/Desktop/курсовая_25.11.25/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/HRManagementSystem.dir/src/MainWindow.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/macbook/Desktop/курсовая_25.11.25/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/HRManagementSystem.dir/src/MainWindow.cpp.o"
 	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HRManagementSystem.dir/src/MainWindow.cpp.o -MF CMakeFiles/HRManagementSystem.dir/src/MainWindow.cpp.o.d -o CMakeFiles/HRManagementSystem.dir/src/MainWindow.cpp.o -c /Users/macbook/Desktop/курсовая_25.11.25/src/MainWindow.cpp
 
 CMakeFiles/HRManagementSystem.dir/src/MainWindow.cpp.i: cmake_force
@@ -222,7 +250,7 @@ CMakeFiles/HRManagementSystem.dir/src/MainWindow.cpp.s: cmake_force
 CMakeFiles/HRManagementSystem.dir/src/main.cpp.o: CMakeFiles/HRManagementSystem.dir/flags.make
 CMakeFiles/HRManagementSystem.dir/src/main.cpp.o: /Users/macbook/Desktop/курсовая_25.11.25/src/main.cpp
 CMakeFiles/HRManagementSystem.dir/src/main.cpp.o: CMakeFiles/HRManagementSystem.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/macbook/Desktop/курсовая_25.11.25/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/HRManagementSystem.dir/src/main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/macbook/Desktop/курсовая_25.11.25/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/HRManagementSystem.dir/src/main.cpp.o"
 	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HRManagementSystem.dir/src/main.cpp.o -MF CMakeFiles/HRManagementSystem.dir/src/main.cpp.o.d -o CMakeFiles/HRManagementSystem.dir/src/main.cpp.o -c /Users/macbook/Desktop/курсовая_25.11.25/src/main.cpp
 
 CMakeFiles/HRManagementSystem.dir/src/main.cpp.i: cmake_force
@@ -243,6 +271,8 @@ HRManagementSystem_OBJECTS = \
 "CMakeFiles/HRManagementSystem.dir/src/Department.cpp.o" \
 "CMakeFiles/HRManagementSystem.dir/src/Position.cpp.o" \
 "CMakeFiles/HRManagementSystem.dir/src/HireDate.cpp.o" \
+"CMakeFiles/HRManagementSystem.dir/src/Algorithm.cpp.o" \
+"CMakeFiles/HRManagementSystem.dir/src/FileManager.cpp.o" \
 "CMakeFiles/HRManagementSystem.dir/src/DataManager.cpp.o" \
 "CMakeFiles/HRManagementSystem.dir/src/MainWindow.cpp.o" \
 "CMakeFiles/HRManagementSystem.dir/src/main.cpp.o"
@@ -258,6 +288,8 @@ HRManagementSystem: CMakeFiles/HRManagementSystem.dir/src/Manager.cpp.o
 HRManagementSystem: CMakeFiles/HRManagementSystem.dir/src/Department.cpp.o
 HRManagementSystem: CMakeFiles/HRManagementSystem.dir/src/Position.cpp.o
 HRManagementSystem: CMakeFiles/HRManagementSystem.dir/src/HireDate.cpp.o
+HRManagementSystem: CMakeFiles/HRManagementSystem.dir/src/Algorithm.cpp.o
+HRManagementSystem: CMakeFiles/HRManagementSystem.dir/src/FileManager.cpp.o
 HRManagementSystem: CMakeFiles/HRManagementSystem.dir/src/DataManager.cpp.o
 HRManagementSystem: CMakeFiles/HRManagementSystem.dir/src/MainWindow.cpp.o
 HRManagementSystem: CMakeFiles/HRManagementSystem.dir/src/main.cpp.o
@@ -266,7 +298,7 @@ HRManagementSystem: /opt/homebrew/lib/QtWidgets.framework/Versions/A/QtWidgets
 HRManagementSystem: /opt/homebrew/lib/QtGui.framework/Versions/A/QtGui
 HRManagementSystem: /opt/homebrew/lib/QtCore.framework/Versions/A/QtCore
 HRManagementSystem: CMakeFiles/HRManagementSystem.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/macbook/Desktop/курсовая_25.11.25/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX executable HRManagementSystem"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/macbook/Desktop/курсовая_25.11.25/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Linking CXX executable HRManagementSystem"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/HRManagementSystem.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

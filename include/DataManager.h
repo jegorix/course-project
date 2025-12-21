@@ -2,6 +2,7 @@
 #define DATAMANAGER_H
 
 #include "Department.h"
+#include "Exceptions.h"
 #include "HireDate.h"
 #include "Manager.h"
 #include "Position.h"
@@ -13,6 +14,8 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+
+class FileManager;
 
 /**
  * Структура для хранения информации о сотруднике и дате приема.
@@ -44,6 +47,7 @@ struct EmployeeSearchFilter {
 enum class EmployeeSortKey {
     ById,
     ByDepartment,
+    ByPosition,
     BySalary,
     ByLastName,
     ByHireDate
@@ -56,6 +60,7 @@ enum class EmployeeSortKey {
 class DataManager {
 public:
     explicit DataManager(const std::string& dataDirectory);
+    ~DataManager();
 
     void loadAll();
     void saveAll() const;
@@ -83,6 +88,7 @@ public:
                    const std::string& lastName,
                    int departmentId,
                    double salary,
+                   int positionId,
                    const std::vector<int>& subordinateIds,
                    const HireDate& hireDate);
 
@@ -107,22 +113,6 @@ public:
     bool updatePositionName(int positionId, const std::string& newName);
     bool updatePositionHours(int positionId, int hoursPerWeek);
 
-    // Поиск и сортировка
-    std::vector<EmployeeRecord> findEmployees(const EmployeeSearchFilter& filter) const;
-    std::vector<EmployeeRecord> sortEmployees(EmployeeSortKey key, bool descending = false) const;
-
-    // Аналитика
-    double calculateAverageSalaryForDepartment(int departmentId) const;
-    std::vector<std::pair<int, double>> buildDepartmentsEfficiencyRating() const;
-
-    // Поиск записей (для UI)
-    EmployeeRecord* findEmployeeRecord(int employeeId);
-    const EmployeeRecord* findEmployeeRecord(int employeeId) const;
-    Department* findDepartment(int departmentId);
-    const Department* findDepartment(int departmentId) const;
-    Position* findPosition(int positionId);
-    const Position* findPosition(int positionId) const;
-
     // Отмена
     bool canUndo() const;
     bool undoLastAction();
@@ -137,6 +127,9 @@ public:
     void clearAllEmployees();
     void clearAllDepartments();
     void clearAllPositions();
+
+    friend class FileManager;
+    friend class Algorithm;
 
 private:
     struct UndoCommand {
@@ -153,6 +146,8 @@ private:
     RecordCollection<Department> departments;
     RecordCollection<Position> positions;
 
+    std::unique_ptr<FileManager> fileManager;
+
     std::unordered_map<int, std::size_t> employeeIndex;
     std::unordered_map<int, std::size_t> departmentIndex;
     std::unordered_map<int, std::size_t> positionIndex;
@@ -164,19 +159,14 @@ private:
     int nextDepartmentId = 1;
     int nextPositionId = 1;
 
-    // Вспомогательные методы
-    void loadEmployees();
-    void loadDepartments();
-    void loadPositions();
-    void loadHireDates();
-
-    void saveEmployees() const;
-    void saveDepartments() const;
-    void savePositions() const;
-    void saveHireDates() const;
-
     void registerEmployee(const EmployeeRecord& record);
     void unregisterEmployee(int employeeId);
+    EmployeeRecord* findEmployeeRecord(int employeeId);
+    const EmployeeRecord* findEmployeeRecord(int employeeId) const;
+    Department* findDepartment(int departmentId);
+    const Department* findDepartment(int departmentId) const;
+    Position* findPosition(int positionId);
+    const Position* findPosition(int positionId) const;
 
     void ensureDepartmentContainsEmployee(int departmentId, int employeeId);
     void removeEmployeeFromDepartment(int departmentId, int employeeId);
@@ -187,4 +177,3 @@ private:
 };
 
 #endif // DATAMANAGER_H
-

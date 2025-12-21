@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "DataManager.h"
+#include "Algorithm.h"
 
 #include <QMainWindow>
 #include <QTableWidget>
@@ -41,6 +42,7 @@ private slots:
     // Аналитика
     void showAverageSalary();
     void showEfficiencyRating();
+    void showPayrollTop();
 
     // Отмена
     void undoLastAction();
@@ -50,10 +52,10 @@ private:
     void refreshAll();
 
     std::unique_ptr<DataManager> manager;
+    std::unique_ptr<Algorithm> algorithm;
     QTableWidget *employeesTable;
     QTableWidget *departmentsTable;
     QTableWidget *positionsTable;
 };
 
 #endif // MAINWINDOW_H
-

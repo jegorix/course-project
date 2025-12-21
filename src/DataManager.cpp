@@ -1,19 +1,12 @@
 #include "DataManager.h"
+#include "FileManager.h"
 
-#include <algorithm>  // std::sort
-#include <cstddef>    // std::size_t, std::ptrdiff_t
-#include <fstream>    // std::ifstream, std::ofstream
-#include <functional> // std::function
-#include <sstream>    // std::istringstream, std::ostringstream
-#include <stdexcept>  // std::runtime_error
-#include <string>     // std::string
-#include <utility>    // std::move
-#include <vector>     // std::vector
-#include <cctype>     // std::isspace
-#include <iomanip>    // std::setfill, std::setw
-#include <sys/stat.h> // mkdir
-#include <filesystem> // std::filesystem (C++17)
-namespace fs = std::filesystem;
+#include <algorithm>
+#include <cstddef>
+#include <functional>
+#include <string>
+#include <utility>
+#include <vector>
 
 // Реализация двух ключевых алгоритмов:
 // 1) Формирование рейтинга отделов по эффективности затрат.
@@ -31,86 +24,6 @@ namespace fs = std::filesystem;
 //
 // Результат — вектор пар (идентификатор отдела, коэффициент эффективности),
 // отсортированный по убыванию эффективности.
-std::vector<std::pair<int, double>> DataManager::buildDepartmentsEfficiencyRating() const
-{
-    std::vector<std::pair<int, double>> rating;
-
-    // Шаг 1. Обход всех отделов
-    for (const auto& dept : departments) {
-        int departmentId = dept.getDepartmentId();
-
-        double totalSalary = 0.0;
-        std::size_t count  = 0;
-
-        // Шаг 2. Сбор информации о сотрудниках отдела
-        for (const auto& record : employees) {
-            if (!record.employee) {
-                continue;
-            }
-            if (record.employee->getDepartmentId() != departmentId) {
-                continue;
-            }
-
-            totalSalary += record.employee->getSalary();
-            ++count;
-        }
-
-        // Шаг 3. Расчёт коэффициента эффективности
-        double efficiency = 0.0;
-        if (count > 0 && totalSalary > 0.0) {
-            efficiency = static_cast<double>(count) / totalSalary;
-        }
-
-        rating.emplace_back(departmentId, efficiency);
-    }
-
-    // Шаг 4. Сортировка отделов по убыванию эффективности затрат
-    std::sort(
-        rating.begin(),
-        rating.end(),
-        [](const auto& lhs, const auto& rhs) {
-            return lhs.second > rhs.second;
-        }
-    );
-
-    return rating;
-}
-
-double DataManager::calculateAverageSalaryForDepartment(int departmentId) const
-{
-    // Шаг 2. Проверить существование отдела
-    const Department* department = findDepartment(departmentId);
-    if (!department) {
-        return 0.0; // отдела нет — нет данных
-    }
-
-    // Шаг 3. Инициализация суммирующих переменных
-    double sumSalary = 0.0;
-    std::size_t count = 0;
-
-    // Шаг 4–5. Цикл по всем сотрудникам
-    for (const auto& record : employees) {
-        if (!record.employee) {
-            continue;
-        }
-        if (record.employee->getDepartmentId() != departmentId) {
-            continue;
-        }
-
-        double salary = record.employee->getSalary();
-        sumSalary += salary;
-        ++count;
-    }
-
-    // Шаг 6. Если сотрудников нет — вернуть 0.0
-    if (count == 0) {
-        return 0.0;
-    }
-
-    // Шаг 7–8. Вычислить и вернуть среднюю зарплату
-    return sumSalary / static_cast<double>(count);
-}
-
 // Простая реализация регистрации команды отмены
 void DataManager::pushUndo(std::function<void()> undoAction,
                            const std::string& description)
@@ -127,30 +40,47 @@ namespace {
         return str.substr(first, (last - first + 1));
     }
 
-    std::vector<std::string> split(const std::string& str, char delimiter) {
-        std::vector<std::string> tokens;
-        std::string token;
-        std::istringstream tokenStream(str);
-        while (std::getline(tokenStream, token, delimiter)) {
-            tokens.push_back(trim(token));
+    void ensureNotEmpty(const std::string& value, const std::string& fieldName) {
+        if (trim(value).empty()) {
+            throw ValidationException("Поле \"" + fieldName + "\" не может быть пустым");
         }
-        return tokens;
     }
 
-    std::string toLower(const std::string& str) {
-        std::string result = str;
-        std::transform(result.begin(), result.end(), result.begin(), ::tolower);
-        return result;
+    void ensurePositive(double value, const std::string& fieldName) {
+        if (value <= 0.0) {
+            throw ValidationException("Поле \"" + fieldName + "\" должно быть положительным");
+        }
+    }
+
+    void ensureValidWorkHours(int hours) {
+        if (hours <= 0 || hours > 168) {
+            throw ValidationException("Количество часов в неделю должно быть в диапазоне 1-168");
+        }
+    }
+
+    void ensureValidHireDate(const HireDate& date) {
+        if (date.getMonth() < 1 || date.getMonth() > 12) {
+            throw ValidationException("Месяц найма должен быть в диапазоне 1-12");
+        }
+        if (date.getDay() < 1 || date.getDay() > 31) {
+            throw ValidationException("День найма должен быть в диапазоне 1-31");
+        }
+        if (date.getHour() < 0 || date.getHour() > 23 || date.getMinute() < 0 || date.getMinute() > 59) {
+            throw ValidationException("Время найма указано неверно");
+        }
     }
 }
 
 // Конструктор
-DataManager::DataManager(const std::string& dataDirectory) {
+DataManager::DataManager(const std::string& dataDirectory)
+    : fileManager(std::make_unique<FileManager>()) {
     employeesPath = dataDirectory + "/employees.txt";
     departmentsPath = dataDirectory + "/departments.txt";
     positionsPath = dataDirectory + "/positions.txt";
     hiresPath = dataDirectory + "/hires.txt";
 }
+
+DataManager::~DataManager() = default;
 
 // Загрузка всех данных
 void DataManager::loadAll() {
@@ -168,24 +98,29 @@ void DataManager::loadAll() {
     nextPositionId = 1;
 
     try {
-        loadPositions();
-        loadDepartments();
-        loadEmployees();
-        loadHireDates();
+        if (!fileManager) {
+            fileManager = std::make_unique<FileManager>();
+        }
+        fileManager->loadAll(*this);
+    } catch (const AppException&) {
+        throw;
     } catch (const std::exception& e) {
-        throw std::runtime_error("Ошибка загрузки данных: " + std::string(e.what()));
+        throw AppException("Не удалось загрузить данные: " + std::string(e.what()));
     }
 }
 
 // Сохранение всех данных
 void DataManager::saveAll() const {
     try {
-        savePositions();
-        saveDepartments();
-        saveEmployees();
-        saveHireDates();
+        if (!fileManager) {
+            // const method, но fileManager должен существовать; если его нет, это логическая ошибка
+            throw AppException("FileManager не инициализирован");
+        }
+        fileManager->saveAll(*this);
+    } catch (const AppException&) {
+        throw;
     } catch (const std::exception& e) {
-        throw std::runtime_error("Ошибка сохранения данных: " + std::string(e.what()));
+        throw AppException("Не удалось сохранить данные: " + std::string(e.what()));
     }
 }
 
@@ -212,285 +147,6 @@ const RecordCollection<Position>& DataManager::getPositions() const {
 
 RecordCollection<Position>& DataManager::getPositions() {
     return positions;
-}
-
-// Загрузка должностей
-void DataManager::loadPositions() {
-    std::ifstream file(positionsPath);
-    if (!file.is_open()) {
-        return;
-    }
-
-    std::string line;
-    while (std::getline(file, line)) {
-        line = trim(line);
-        if (line.empty() || line[0] == '#') continue;
-
-        auto parts = split(line, ';');
-        if (parts.size() < 3) continue;
-
-        try {
-            int id = std::stoi(parts[0]);
-            std::string name = parts[1];
-            int hours = std::stoi(parts[2]);
-
-            Position pos(id, name, hours);
-            positions.add(pos);
-            positionIndex[id] = positions.size() - 1;
-            nextPositionId = std::max(nextPositionId, id + 1);
-        } catch (...) {
-            continue;
-        }
-    }
-}
-
-// Загрузка отделов
-void DataManager::loadDepartments() {
-    std::ifstream file(departmentsPath);
-    if (!file.is_open()) {
-        return;
-    }
-
-    std::string line;
-    while (std::getline(file, line)) {
-        line = trim(line);
-        if (line.empty() || line[0] == '#') continue;
-
-        auto parts = split(line, ';');
-        if (parts.size() < 3) continue;
-
-        try {
-            int id = std::stoi(parts[0]);
-            std::string name = parts[1];
-            int managerId = std::stoi(parts[2]);
-
-            Department dept(id, name, managerId);
-            if (parts.size() >= 4 && !parts[3].empty()) {
-                auto employeeIds = split(parts[3], ',');
-                for (const auto& empIdStr : employeeIds) {
-                    if (!empIdStr.empty()) {
-                        dept.addEmployee(std::stoi(empIdStr));
-                    }
-                }
-            }
-
-            departments.add(dept);
-            departmentIndex[id] = departments.size() - 1;
-            nextDepartmentId = std::max(nextDepartmentId, id + 1);
-        } catch (...) {
-            continue;
-        }
-    }
-}
-
-// Загрузка сотрудников
-void DataManager::loadEmployees() {
-    std::ifstream file(employeesPath);
-    if (!file.is_open()) {
-        return;
-    }
-
-    std::string line;
-    while (std::getline(file, line)) {
-        line = trim(line);
-        if (line.empty() || line[0] == '#') continue;
-
-        auto parts = split(line, ';');
-        if (parts.size() < 6) continue;
-
-        try {
-            int id = std::stoi(parts[0]);
-            std::string type = toLower(parts[1]);
-            std::string firstName = parts[2];
-            std::string lastName = parts[3];
-            int departmentId = std::stoi(parts[4]);
-            double salary = std::stod(parts[5]);
-
-            std::shared_ptr<Employee> employee;
-            if (type == "manager") {
-                std::vector<int> subordinates;
-                if (parts.size() >= 7 && !parts[6].empty()) {
-                    auto subIds = split(parts[6], ',');
-                    for (const auto& subIdStr : subIds) {
-                        if (!subIdStr.empty()) {
-                            subordinates.push_back(std::stoi(subIdStr));
-                        }
-                    }
-                }
-                employee = std::make_shared<Manager>(id, firstName, lastName, departmentId, salary, subordinates);
-            } else if (type == "worker") {
-                int positionId = (parts.size() >= 7) ? std::stoi(parts[6]) : 0;
-                double bonus = (parts.size() >= 8) ? std::stod(parts[7]) : 0.0;
-                employee = std::make_shared<Worker>(id, firstName, lastName, departmentId, salary, positionId, bonus);
-            } else {
-                continue;
-            }
-
-            HireDate hireDate; // Будет обновлено в loadHireDates
-            EmployeeRecord record{employee, hireDate};
-            employees.add(record);
-            registerEmployee(record);
-            ensureDepartmentContainsEmployee(departmentId, id);
-            nextEmployeeId = std::max(nextEmployeeId, id + 1);
-        } catch (...) {
-            continue;
-        }
-    }
-}
-
-// Загрузка дат найма
-void DataManager::loadHireDates() {
-    std::ifstream file(hiresPath);
-    if (!file.is_open()) {
-        return;
-    }
-
-    std::string line;
-    while (std::getline(file, line)) {
-        line = trim(line);
-        if (line.empty() || line[0] == '#') continue;
-
-        auto parts = split(line, ';');
-        if (parts.size() < 6) continue;
-
-        try {
-            int employeeId = std::stoi(parts[0]);
-            int day = std::stoi(parts[1]);
-            int month = std::stoi(parts[2]);
-            int year = std::stoi(parts[3]);
-            int hour = std::stoi(parts[4]);
-            int minute = std::stoi(parts[5]);
-
-            EmployeeRecord* record = findEmployeeRecord(employeeId);
-            if (record) {
-                record->hireDate = HireDate(employeeId, day, month, year, hour, minute);
-            }
-        } catch (...) {
-            continue;
-        }
-    }
-}
-
-// Сохранение должностей
-void DataManager::savePositions() const {
-    // Создать директорию если её нет
-    try {
-        std::string dir = positionsPath.substr(0, positionsPath.find_last_of("/\\"));
-        if (!dir.empty()) {
-            fs::create_directories(dir);
-        }
-    } catch (...) {
-        // Игнорируем ошибки создания директории
-    }
-    
-    std::ofstream file(positionsPath);
-    if (!file.is_open()) {
-        throw std::runtime_error("Не удалось открыть файл для сохранения должностей");
-    }
-
-    for (const auto& pos : positions) {
-        file << pos.getPositionId() << ";"
-             << pos.getPositionName() << ";"
-             << pos.getWorkHoursPerWeek() << "\n";
-    }
-}
-
-// Сохранение отделов
-void DataManager::saveDepartments() const {
-    // Создать директорию если её нет
-    try {
-        std::string dir = departmentsPath.substr(0, departmentsPath.find_last_of("/\\"));
-        if (!dir.empty()) {
-            fs::create_directories(dir);
-        }
-    } catch (...) {
-        // Игнорируем ошибки создания директории
-    }
-    
-    std::ofstream file(departmentsPath);
-    if (!file.is_open()) {
-        throw std::runtime_error("Не удалось открыть файл для сохранения отделов");
-    }
-
-    for (const auto& dept : departments) {
-        file << dept.getDepartmentId() << ";"
-             << dept.getDepartmentName() << ";"
-             << dept.getManagerId() << ";";
-
-        auto empIds = dept.getEmployees();
-        for (size_t i = 0; i < empIds.size(); ++i) {
-            if (i > 0) file << ",";
-            file << empIds[i];
-        }
-        file << "\n";
-    }
-}
-
-// Сохранение сотрудников
-void DataManager::saveEmployees() const {
-    // Создать директорию если её нет
-    try {
-        std::string dir = employeesPath.substr(0, employeesPath.find_last_of("/\\"));
-        if (!dir.empty()) {
-            fs::create_directories(dir);
-        }
-    } catch (...) {
-        // Игнорируем ошибки создания директории
-    }
-    
-    std::ofstream file(employeesPath);
-    if (!file.is_open()) {
-        throw std::runtime_error("Не удалось открыть файл для сохранения сотрудников");
-    }
-
-    for (const auto& record : employees) {
-        if (!record.employee) continue;
-
-        file << record.employee->getEmployeeId() << ";";
-
-        if (auto manager = std::dynamic_pointer_cast<Manager>(record.employee)) {
-            file << "MANAGER;" << manager->getFirstName() << ";" << manager->getLastName() << ";"
-                 << manager->getDepartmentId() << ";" << manager->getSalary() << ";";
-            auto subs = manager->getSubordinates();
-            for (size_t i = 0; i < subs.size(); ++i) {
-                if (i > 0) file << ",";
-                file << subs[i];
-            }
-        } else if (auto worker = std::dynamic_pointer_cast<Worker>(record.employee)) {
-            file << "WORKER;" << worker->getFirstName() << ";" << worker->getLastName() << ";"
-                 << worker->getDepartmentId() << ";" << worker->getSalary() << ";"
-                 << worker->getPositionId() << ";" << worker->getBonus();
-        }
-        file << "\n";
-    }
-}
-
-// Сохранение дат найма
-void DataManager::saveHireDates() const {
-    // Создать директорию если её нет
-    try {
-        std::string dir = hiresPath.substr(0, hiresPath.find_last_of("/\\"));
-        if (!dir.empty()) {
-            fs::create_directories(dir);
-        }
-    } catch (...) {
-        // Игнорируем ошибки создания директории
-    }
-    
-    std::ofstream file(hiresPath);
-    if (!file.is_open()) {
-        throw std::runtime_error("Не удалось открыть файл для сохранения дат найма");
-    }
-
-    for (const auto& record : employees) {
-        if (!record.employee) continue;
-        file << record.employee->getEmployeeId() << ";"
-             << record.hireDate.getDay() << ";"
-             << record.hireDate.getMonth() << ";"
-             << record.hireDate.getYear() << ";"
-             << record.hireDate.getHour() << ";"
-             << record.hireDate.getMinute() << "\n";
-    }
 }
 
 // Генерация ID
@@ -595,11 +251,19 @@ std::shared_ptr<Employee> DataManager::cloneEmployee(const Employee& source) con
 int DataManager::addWorker(const std::string& firstName, const std::string& lastName,
                            int departmentId, double salary, int positionId,
                            double bonus, const HireDate& hireDate) {
+    ensureNotEmpty(firstName, "Имя");
+    ensureNotEmpty(lastName, "Фамилия");
+    ensurePositive(salary, "Зарплата");
+    ensureValidHireDate(hireDate);
+    if (bonus < 0.0) {
+        throw ValidationException("Премия не может быть отрицательной");
+    }
+
     if (!findDepartment(departmentId)) {
-        throw std::runtime_error("Отдел не найден");
+        throw EntityNotFoundException("Отдел", departmentId);
     }
     if (!findPosition(positionId)) {
-        throw std::runtime_error("Должность не найдена");
+        throw EntityNotFoundException("Должность", positionId);
     }
 
     int id = generateEmployeeId();
@@ -619,14 +283,31 @@ int DataManager::addWorker(const std::string& firstName, const std::string& last
 }
 
 int DataManager::addManager(const std::string& firstName, const std::string& lastName,
-                            int departmentId, double salary,
+                            int departmentId, double salary, int positionId,
                             const std::vector<int>& subordinateIds, const HireDate& hireDate) {
+    ensureNotEmpty(firstName, "Имя");
+    ensureNotEmpty(lastName, "Фамилия");
+    ensurePositive(salary, "Зарплата");
+    ensureValidHireDate(hireDate);
+
     if (!findDepartment(departmentId)) {
-        throw std::runtime_error("Отдел не найден");
+        throw EntityNotFoundException("Отдел", departmentId);
+    }
+    if (!findPosition(positionId)) {
+        throw EntityNotFoundException("Должность", positionId);
+    }
+    for (int subordinateId : subordinateIds) {
+        auto* subordinateRecord = findEmployeeRecord(subordinateId);
+        if (!subordinateRecord || !subordinateRecord->employee) {
+            throw EntityNotFoundException("Подчиненный", subordinateId);
+        }
+        if (!std::dynamic_pointer_cast<Worker>(subordinateRecord->employee)) {
+            throw OperationNotAllowedException("Подчиненным может быть только работник (id=" + std::to_string(subordinateId) + ")");
+        }
     }
 
     int id = generateEmployeeId();
-    auto manager = std::make_shared<Manager>(id, firstName, lastName, departmentId, salary, subordinateIds);
+    auto manager = std::make_shared<Manager>(id, firstName, lastName, departmentId, salary, positionId, subordinateIds);
     EmployeeRecord record{manager, hireDate};
     employees.add(record);
     registerEmployee(record);
@@ -644,7 +325,7 @@ int DataManager::addManager(const std::string& firstName, const std::string& las
 bool DataManager::removeEmployee(int employeeId) {
     EmployeeRecord* record = findEmployeeRecord(employeeId);
     if (!record || !record->employee) {
-        return false;
+        throw EntityNotFoundException("Сотрудник", employeeId);
     }
 
     int deptId = record->employee->getDepartmentId();
@@ -673,8 +354,12 @@ bool DataManager::removeEmployee(int employeeId) {
 
 bool DataManager::updateEmployeeDepartment(int employeeId, int newDepartmentId) {
     EmployeeRecord* record = findEmployeeRecord(employeeId);
-    if (!record || !record->employee) return false;
-    if (!findDepartment(newDepartmentId)) return false;
+    if (!record || !record->employee) {
+        throw EntityNotFoundException("Сотрудник", employeeId);
+    }
+    if (!findDepartment(newDepartmentId)) {
+        throw EntityNotFoundException("Отдел", newDepartmentId);
+    }
 
     int oldDeptId = record->employee->getDepartmentId();
     record->employee->setDepartmentId(newDepartmentId);
@@ -692,7 +377,12 @@ bool DataManager::updateEmployeeDepartment(int employeeId, int newDepartmentId) 
 
 bool DataManager::updateEmployeeSalary(int employeeId, double newSalary) {
     EmployeeRecord* record = findEmployeeRecord(employeeId);
-    if (!record || !record->employee) return false;
+    if (!record || !record->employee) {
+        throw EntityNotFoundException("Сотрудник", employeeId);
+    }
+    if (newSalary <= 0) {
+        throw ValidationException("Зарплата должна быть больше нуля");
+    }
 
     double oldSalary = record->employee->getSalary();
     record->employee->setSalary(newSalary);
@@ -708,14 +398,24 @@ bool DataManager::updateEmployeeSalary(int employeeId, double newSalary) {
 
 bool DataManager::updateEmployeePosition(int employeeId, int newPositionId) {
     EmployeeRecord* record = findEmployeeRecord(employeeId);
-    if (!record || !record->employee) return false;
+    if (!record || !record->employee) {
+        throw EntityNotFoundException("Сотрудник", employeeId);
+    }
 
-    auto worker = std::dynamic_pointer_cast<Worker>(record->employee);
-    if (!worker) return false;
-    if (!findPosition(newPositionId)) return false;
+    if (!findPosition(newPositionId)) {
+        throw EntityNotFoundException("Должность", newPositionId);
+    }
 
-    int oldPositionId = worker->getPositionId();
-    worker->setPositionId(newPositionId);
+    int oldPositionId = 0;
+    if (auto worker = std::dynamic_pointer_cast<Worker>(record->employee)) {
+        oldPositionId = worker->getPositionId();
+        worker->setPositionId(newPositionId);
+    } else if (auto managerPtr = std::dynamic_pointer_cast<Manager>(record->employee)) {
+        oldPositionId = managerPtr->getPositionId();
+        managerPtr->setPositionId(newPositionId);
+    } else {
+        throw ValidationException("Неизвестный тип сотрудника");
+    }
 
     if (!undoInProgress) {
         pushUndo([this, employeeId, oldPositionId]() {
@@ -728,10 +428,17 @@ bool DataManager::updateEmployeePosition(int employeeId, int newPositionId) {
 
 bool DataManager::updateEmployeeBonus(int employeeId, double newBonus) {
     EmployeeRecord* record = findEmployeeRecord(employeeId);
-    if (!record || !record->employee) return false;
+    if (!record || !record->employee) {
+        throw EntityNotFoundException("Сотрудник", employeeId);
+    }
 
     auto worker = std::dynamic_pointer_cast<Worker>(record->employee);
-    if (!worker) return false;
+    if (!worker) {
+        throw ValidationException("Сотрудник не является работником");
+    }
+    if (newBonus < 0) {
+        throw ValidationException("Премия не может быть отрицательной");
+    }
 
     double oldBonus = worker->getBonus();
     worker->setBonus(newBonus);
@@ -747,7 +454,11 @@ bool DataManager::updateEmployeeBonus(int employeeId, double newBonus) {
 
 bool DataManager::updateEmployeeName(int employeeId, const std::string& newFirstName, const std::string& newLastName) {
     EmployeeRecord* record = findEmployeeRecord(employeeId);
-    if (!record || !record->employee) return false;
+    if (!record || !record->employee) {
+        throw EntityNotFoundException("Сотрудник", employeeId);
+    }
+    ensureNotEmpty(newFirstName, "Имя");
+    ensureNotEmpty(newLastName, "Фамилия");
 
     std::string oldFirstName = record->employee->getFirstName();
     std::string oldLastName = record->employee->getLastName();
@@ -765,7 +476,10 @@ bool DataManager::updateEmployeeName(int employeeId, const std::string& newFirst
 
 bool DataManager::updateEmployeeHireDate(int employeeId, const HireDate& newHireDate) {
     EmployeeRecord* record = findEmployeeRecord(employeeId);
-    if (!record) return false;
+    if (!record) {
+        throw EntityNotFoundException("Сотрудник", employeeId);
+    }
+    ensureValidHireDate(newHireDate);
 
     HireDate oldHireDate = record->hireDate;
     record->hireDate = newHireDate;
@@ -781,6 +495,16 @@ bool DataManager::updateEmployeeHireDate(int employeeId, const HireDate& newHire
 
 // Операции над отделами
 int DataManager::addDepartment(const std::string& name, int managerId) {
+    ensureNotEmpty(name, "Название отдела");
+    if (managerId != 0) {
+        auto* managerRecord = findEmployeeRecord(managerId);
+        if (!managerRecord || !managerRecord->employee) {
+            throw EntityNotFoundException("Руководитель отдела", managerId);
+        }
+        if (!std::dynamic_pointer_cast<Manager>(managerRecord->employee)) {
+            throw OperationNotAllowedException("Руководителем отдела может быть только сотрудник типа \"Руководитель\"");
+        }
+    }
     int id = generateDepartmentId();
     Department dept(id, name, managerId);
     departments.add(dept);
@@ -797,7 +521,9 @@ int DataManager::addDepartment(const std::string& name, int managerId) {
 
 bool DataManager::removeDepartment(int departmentId) {
     Department* dept = findDepartment(departmentId);
-    if (!dept) return false;
+    if (!dept) {
+        throw EntityNotFoundException("Отдел", departmentId);
+    }
 
     // Проверка наличия сотрудников
     bool hasEmployees = false;
@@ -808,7 +534,9 @@ bool DataManager::removeDepartment(int departmentId) {
         }
     }
 
-    if (hasEmployees) return false;
+    if (hasEmployees) {
+        throw OperationNotAllowedException("Отдел содержит сотрудников и не может быть удален");
+    }
 
     Department removedDept = *dept;
     size_t index = departmentIndex[departmentId];
@@ -835,7 +563,10 @@ bool DataManager::removeDepartment(int departmentId) {
 
 bool DataManager::updateDepartmentName(int departmentId, const std::string& newName) {
     Department* dept = findDepartment(departmentId);
-    if (!dept) return false;
+    if (!dept) {
+        throw EntityNotFoundException("Отдел", departmentId);
+    }
+    ensureNotEmpty(newName, "Название отдела");
 
     std::string oldName = dept->getDepartmentName();
     dept->setDepartmentName(newName);
@@ -851,7 +582,19 @@ bool DataManager::updateDepartmentName(int departmentId, const std::string& newN
 
 bool DataManager::updateDepartmentManager(int departmentId, int managerId) {
     Department* dept = findDepartment(departmentId);
-    if (!dept) return false;
+    if (!dept) {
+        throw EntityNotFoundException("Отдел", departmentId);
+    }
+
+    if (managerId != 0) {
+        auto* managerRecord = findEmployeeRecord(managerId);
+        if (!managerRecord || !managerRecord->employee) {
+            throw EntityNotFoundException("Руководитель отдела", managerId);
+        }
+        if (!std::dynamic_pointer_cast<Manager>(managerRecord->employee)) {
+            throw OperationNotAllowedException("Руководителем отдела может быть только сотрудник типа \"Руководитель\"");
+        }
+    }
 
     int oldManagerId = dept->getManagerId();
     dept->setManagerId(managerId);
@@ -867,6 +610,8 @@ bool DataManager::updateDepartmentManager(int departmentId, int managerId) {
 
 // Операции над должностями
 int DataManager::addPosition(const std::string& name, int hoursPerWeek) {
+    ensureNotEmpty(name, "Название должности");
+    ensureValidWorkHours(hoursPerWeek);
     int id = generatePositionId();
     Position pos(id, name, hoursPerWeek);
     positions.add(pos);
@@ -883,14 +628,21 @@ int DataManager::addPosition(const std::string& name, int hoursPerWeek) {
 
 bool DataManager::removePosition(int positionId) {
     Position* pos = findPosition(positionId);
-    if (!pos) return false;
+    if (!pos) {
+        throw EntityNotFoundException("Должность", positionId);
+    }
 
     // Проверка использования
     for (const auto& record : employees) {
         if (record.employee) {
-            auto worker = std::dynamic_pointer_cast<Worker>(record.employee);
-            if (worker && worker->getPositionId() == positionId) {
-                return false; // Должность используется
+            if (auto worker = std::dynamic_pointer_cast<Worker>(record.employee)) {
+                if (worker->getPositionId() == positionId) {
+                    throw OperationNotAllowedException("Должность используется сотрудниками");
+                }
+            } else if (auto managerPtr = std::dynamic_pointer_cast<Manager>(record.employee)) {
+                if (managerPtr->getPositionId() == positionId) {
+                    throw OperationNotAllowedException("Должность используется сотрудниками");
+                }
             }
         }
     }
@@ -920,7 +672,10 @@ bool DataManager::removePosition(int positionId) {
 
 bool DataManager::updatePositionName(int positionId, const std::string& newName) {
     Position* pos = findPosition(positionId);
-    if (!pos) return false;
+    if (!pos) {
+        throw EntityNotFoundException("Должность", positionId);
+    }
+    ensureNotEmpty(newName, "Название должности");
 
     std::string oldName = pos->getPositionName();
     pos->setPositionName(newName);
@@ -936,7 +691,10 @@ bool DataManager::updatePositionName(int positionId, const std::string& newName)
 
 bool DataManager::updatePositionHours(int positionId, int hoursPerWeek) {
     Position* pos = findPosition(positionId);
-    if (!pos) return false;
+    if (!pos) {
+        throw EntityNotFoundException("Должность", positionId);
+    }
+    ensureValidWorkHours(hoursPerWeek);
 
     int oldHours = pos->getWorkHoursPerWeek();
     pos->setWorkHoursPerWeek(hoursPerWeek);
@@ -948,87 +706,6 @@ bool DataManager::updatePositionHours(int positionId, int hoursPerWeek) {
     }
 
     return true;
-}
-
-// Поиск сотрудников
-std::vector<EmployeeRecord> DataManager::findEmployees(const EmployeeSearchFilter& filter) const {
-    std::vector<EmployeeRecord> result;
-
-    for (const auto& record : employees) {
-        if (!record.employee) continue;
-
-        // Фильтр по отделу
-        if (filter.useDepartmentId) {
-            if (record.employee->getDepartmentId() != filter.departmentId) continue;
-        }
-
-        // Фильтр по зарплате
-        if (filter.useMinSalary) {
-            if (record.employee->getSalary() < filter.minSalary) continue;
-        }
-        if (filter.useMaxSalary) {
-            if (record.employee->getSalary() > filter.maxSalary) continue;
-        }
-
-        // Фильтр по должности
-        if (filter.usePositionId) {
-            auto worker = std::dynamic_pointer_cast<const Worker>(record.employee);
-            if (!worker || worker->getPositionId() != filter.positionId) continue;
-        }
-
-        // Фильтр по имени
-        if (filter.useNameFragment) {
-            std::string fullName = toLower(record.employee->getFullName());
-            std::string fragment = toLower(filter.nameFragment);
-            if (fullName.find(fragment) == std::string::npos) continue;
-        }
-
-        result.push_back(record);
-    }
-
-    return result;
-}
-
-// Сортировка сотрудников
-std::vector<EmployeeRecord> DataManager::sortEmployees(EmployeeSortKey key, bool descending) const {
-    std::vector<EmployeeRecord> result;
-    for (const auto& record : employees) {
-        if (record.employee) {
-            result.push_back(record);
-        }
-    }
-
-    std::sort(result.begin(), result.end(), [key, descending](const EmployeeRecord& a, const EmployeeRecord& b) {
-        if (!a.employee || !b.employee) return false;
-
-        int cmp = 0;
-        switch (key) {
-            case EmployeeSortKey::ById:
-                cmp = (a.employee->getEmployeeId() < b.employee->getEmployeeId()) ? -1 : 1;
-                break;
-            case EmployeeSortKey::ByDepartment:
-                cmp = (a.employee->getDepartmentId() < b.employee->getDepartmentId()) ? -1 : 1;
-                break;
-            case EmployeeSortKey::BySalary:
-                cmp = (a.employee->getSalary() < b.employee->getSalary()) ? -1 : 1;
-                break;
-            case EmployeeSortKey::ByLastName:
-                cmp = a.employee->getLastName().compare(b.employee->getLastName());
-                break;
-            case EmployeeSortKey::ByHireDate:
-                if (a.hireDate.getYear() != b.hireDate.getYear()) {
-                    cmp = (a.hireDate.getYear() < b.hireDate.getYear()) ? -1 : 1;
-                } else if (a.hireDate.getMonth() != b.hireDate.getMonth()) {
-                    cmp = (a.hireDate.getMonth() < b.hireDate.getMonth()) ? -1 : 1;
-                } else if (a.hireDate.getDay() != b.hireDate.getDay()) {
-                    cmp = (a.hireDate.getDay() < b.hireDate.getDay()) ? -1 : 1;
-                }
-                break;
-        }
-        return descending ? (cmp > 0) : (cmp < 0);
-    });
-
-    return result;
 }
 
 // Отмена действий
@@ -1176,6 +853,3 @@ void DataManager::clearAllPositions() {
         }, "Сброс всех должностей");
     }
 }
-
-
-

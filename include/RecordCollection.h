@@ -3,9 +3,9 @@
 
 #include <cstddef>
 #include <functional>
-#include <stdexcept>
 #include <utility>
 #include <vector>
+#include "Exceptions.h"
 
 /**
  * Шаблонный контейнер с пользовательским итератором.
@@ -27,14 +27,14 @@ public:
 
         reference operator*() const {
             if (current < begin || current >= end) {
-                throw std::out_of_range("Итератор указывает на некорректную позицию");
+                throw CollectionBoundsException("Итератор указывает на некорректную позицию");
             }
             return *current;
         }
 
         pointer operator->() const {
             if (current < begin || current >= end) {
-                throw std::out_of_range("Итератор указывает на некорректную позицию");
+                throw CollectionBoundsException("Итератор указывает на некорректную позицию");
             }
             return current;
         }
@@ -231,4 +231,3 @@ private:
 };
 
 #endif // RECORDCOLLECTION_H
-

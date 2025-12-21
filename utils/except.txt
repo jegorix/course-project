@@ -1,0 +1,36 @@
+package "Исключения" {
+  class MyException {
+    - code    : int
+    - message : std::string
+    --
+    + MyException()
+    + MyException(code : int, message : std::string)
+    + ~MyException()
+    + GetCode() : int
+    + GetMessage() : std::string
+    + SetCode(code : int) : void
+    + SetMessage(message : std::string) : void
+    + what() : const char*
+    + ShowError() : void
+  }
+
+  class MyExceptionContainer {
+    + MyExceptionContainer()
+    + MyExceptionContainer(code : int, message : std::string)
+    + ~MyExceptionContainer()
+    + ShowError() : void
+  }
+
+  class MyExceptionFile {
+    + MyExceptionFile()
+    + MyExceptionFile(code : int, message : std::string)
+    + ~MyExceptionFile()
+    + ShowError() : void
+  }
+
+  class MyExceptionInput {
+    + MyExceptionInput()
+    + MyExceptionInput(code : int, message : std::string)
+    + ~MyExceptionInput()
+    + ShowError() : void
+  }

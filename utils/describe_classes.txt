@@ -1,0 +1,221 @@
+2.3 Описание классов
+Основные классы предметной области:
+
+Класс Person
+Базовый класс для представления человека. Содержит общее для всех сущностей имя и фамилию.
+Поля:
+std::string firstName – имя;
+std::string lastName – фамилия.
+Методы:
+Person() – конструктор по умолчанию;
+Person(const std::string& firstName, const std::string& lastName) – конструктор с параметрами;
+virtual ~Person() – виртуальный деструктор;
+std::string getFirstName() const – получение имени;
+std::string getLastName() const – получение фамилии;
+std::string getFullName() const – получение полного имени;
+void setFirstName(const std::string& firstName) – установка имени;
+void setLastName(const std::string& lastName) – установка фамилии;
+virtual void displayInfo() const = 0 – виртуальный вывод информации.
+
+Класс Employee
+Производный от Person, описывает сотрудника предприятия.
+Поля:
+int employeeId – идентификатор сотрудника;
+int departmentId – идентификатор отдела;
+double salary – должностной оклад.
+Методы:
+Employee() – конструктор по умолчанию;
+Employee(int employeeId, const std::string& firstName, const std::string& lastName, int departmentId, double salary) – конструктор с параметрами;
+virtual ~Employee() – деструктор;
+int getEmployeeId() const – получение id;
+int getDepartmentId() const – получение id отдела;
+double getSalary() const – получение оклада;
+void setEmployeeId(int employeeId) – установка id;
+void setDepartmentId(int departmentId) – установка отдела;
+void setSalary(double salary) – установка оклада;
+virtual void displayInfo() const override – вывод информации;
+virtual double calculateTotalIncome() const – расчет итогового дохода.
+
+Класс Worker
+Производный от Employee, представляет рядового сотрудника.
+Поля:
+int positionId – идентификатор должности;
+double bonus – размер премии.
+Методы:
+Worker() – конструктор по умолчанию;
+Worker(int employeeId, const std::string& firstName, const std::string& lastName, int departmentId, double salary, int positionId, double bonus = 0.0) – конструктор с параметрами;
+~Worker() – деструктор;
+int getPositionId() const – получение id должности;
+double getBonus() const – получение премии;
+void setPositionId(int positionId) – установка должности;
+void setBonus(double bonus) – установка премии;
+void displayInfo() const override – вывод информации;
+double calculateTotalIncome() const override – расчет дохода с учетом премии.
+
+Класс Manager
+Производный от Employee, описывает руководителя отдела.
+Поля:
+std::vector<int> subordinates – список id подчиненных.
+Методы:
+Manager() – конструктор по умолчанию;
+Manager(int employeeId, const std::string& firstName, const std::string& lastName, int departmentId, double salary, const std::vector<int>& subordinates) – конструктор с параметрами;
+~Manager() – деструктор;
+void addSubordinate(int subordinateId) – добавление подчиненного;
+void removeSubordinate(int subordinateId) – удаление подчиненного;
+std::vector<int> getSubordinates() const – получение списка подчиненных;
+int getSubordinatesCount() const – количество подчиненных;
+bool hasSubordinate(int subordinateId) const – проверка наличия подчиненного;
+void displayInfo() const override – вывод информации;
+double calculateTotalIncome() const override – расчет дохода (оклад, без премий работников).
+
+Класс Department
+Описывает отдел предприятия и его сотрудников.
+Поля:
+int departmentId – идентификатор отдела;
+std::string departmentName – название отдела;
+int managerId – идентификатор руководителя;
+std::vector<int> employees – список id сотрудников отдела.
+Методы:
+Department() – конструктор по умолчанию;
+Department(int departmentId, const std::string& departmentName, int managerId) – конструктор с параметрами;
+~Department() – деструктор;
+int getDepartmentId() const – получение id;
+std::string getDepartmentName() const – получение названия;
+int getManagerId() const – получение id руководителя;
+std::vector<int> getEmployees() const – получение списка сотрудников;
+int getEmployeesCount() const – количество сотрудников;
+void setDepartmentId(int departmentId) – установка id;
+void setDepartmentName(const std::string& departmentName) – установка названия;
+void setManagerId(int managerId) – установка руководителя;
+void addEmployee(int employeeId) – добавление сотрудника;
+void removeEmployee(int employeeId) – удаление сотрудника;
+bool hasEmployee(int employeeId) const – проверка наличия сотрудника;
+void clearEmployees() – очистка списка;
+void displayInfo() const – вывод информации.
+
+Класс Position
+Представляет должность с графиком работы.
+Поля:
+int positionId – идентификатор должности;
+std::string positionName – название должности;
+int workHoursPerWeek – недельная норма часов.
+Методы:
+Position() – конструктор по умолчанию;
+Position(int positionId, const std::string& positionName, int workHoursPerWeek) – конструктор с параметрами;
+~Position() – деструктор;
+int getPositionId() const – получение id;
+std::string getPositionName() const – получение названия;
+int getWorkHoursPerWeek() const – получение нормы часов;
+void setPositionId(int positionId) – установка id;
+void setPositionName(const std::string& positionName) – установка названия;
+void setWorkHoursPerWeek(int workHoursPerWeek) – установка нормы часов;
+void displayInfo() const – вывод информации.
+
+Класс HireDate
+Хранит дату и время приема сотрудника на работу.
+Поля:
+int employeeId – идентификатор сотрудника;
+int day – день;
+int month – месяц;
+int year – год;
+int hour – час;
+int minute – минуты.
+Методы:
+HireDate() – конструктор по умолчанию;
+HireDate(int employeeId, int day, int month, int year, int hour, int minute) – конструктор с параметрами;
+~HireDate() – деструктор;
+int getEmployeeId() const – получение id;
+int getDay() const – получение дня;
+int getMonth() const – получение месяца;
+int getYear() const – получение года;
+int getHour() const – получение часа;
+int getMinute() const – получение минут;
+void setEmployeeId(int employeeId) – установка id;
+void setDay(int day) – установка дня;
+void setMonth(int month) – установка месяца;
+void setYear(int year) – установка года;
+void setHour(int hour) – установка часа;
+void setMinute(int minute) – установка минут;
+std::string getDateString() const – форматированная дата;
+std::string getTimeString() const – форматированное время;
+std::string getFullDateTimeString() const – дата и время;
+void displayInfo() const – вывод информации.
+
+Класс RecordCollection<T>
+Шаблонный контейнер с пользовательским итератором, обеспечивает хранение записей и базовые алгоритмы.
+Поля:
+std::vector<T> records – внутреннее хранилище.
+Методы:
+RecordCollection() – конструктор по умолчанию;
+explicit RecordCollection(std::vector<T> values) – конструктор из набора данных;
+Iterator begin()/end() – итераторы с проверкой границ;
+std::size_t size() const – размер коллекции;
+bool empty() const – проверка пустоты;
+void reserve(std::size_t capacity) – резервирование памяти;
+void add(const T& value)/add(T&& value) – добавление записи;
+T& at(std::size_t index)/operator[] – доступ по индексу;
+void clear() – очистка коллекции;
+template <typename Predicate> Iterator findIf(Predicate predicate) – поиск по условию;
+template <typename Predicate> void removeIf(Predicate predicate) – удаление по условию;
+template <typename Compare> void insertionSort(Compare compare) – сортировка вставками;
+template <typename Function> void forEach(Function fn) – обход записей;
+std::vector<T>& data()/const std::vector<T>& data() const – прямой доступ к данным.
+
+Класс DataManager
+Менеджер данных приложения: загрузка/сохранение, CRUD-операции, поиск, сортировка, аналитика и отмена действий.
+Поля:
+std::string employeesPath, departmentsPath, positionsPath, hiresPath – пути к файлам данных;
+RecordCollection<EmployeeRecord> employees – коллекция сотрудников с датами найма;
+RecordCollection<Department> departments – коллекция отделов;
+RecordCollection<Position> positions – коллекция должностей;
+std::unordered_map<int, std::size_t> employeeIndex/departmentIndex/positionIndex – индексы для быстрого доступа;
+std::vector<UndoCommand> undoStack – стек команд отмены;
+int nextEmployeeId, nextDepartmentId, nextPositionId – генераторы идентификаторов;
+bool undoInProgress – флаг выполнения undo.
+Методы:
+explicit DataManager(const std::string& dataDirectory) – конструктор с указанием каталога данных;
+void loadAll()/saveAll() const – загрузка и сохранение всех файлов;
+int addWorker(...), int addManager(...) – добавление сотрудников разных типов;
+bool removeEmployee(int employeeId) – удаление сотрудника;
+bool updateEmployeeDepartment/Salary/Position/Bonus/Name/HireDate(...) – обновление полей;
+int addDepartment(...), bool removeDepartment(...), bool updateDepartmentName(...), bool updateDepartmentManager(...) – операции над отделами;
+int addPosition(...), bool removePosition(...), bool updatePositionName/Hours(...) – операции над должностями;
+std::vector<EmployeeRecord> findEmployees(const EmployeeSearchFilter& filter) const – поиск с фильтрами;
+std::vector<EmployeeRecord> sortEmployees(EmployeeSortKey key, bool descending = false) const – сортировка;
+double calculateAverageSalaryForDepartment(int departmentId) const – средняя зарплата по отделу;
+std::vector<std::pair<int, double>> buildDepartmentsEfficiencyRating() const – рейтинг эффективности отделов;
+EmployeeRecord*/const EmployeeRecord* findEmployeeRecord(int employeeId) – поиск записи сотрудника;
+Department*/const Department* findDepartment(int departmentId) – поиск отдела;
+Position*/const Position* findPosition(int positionId) – поиск должности;
+bool canUndo() const/ bool undoLastAction() – проверка и выполнение отмены;
+void pushUndo(std::function<void()> undoAction, const std::string& description) – добавление команды отмены;
+void clearAllEmployees()/clearAllDepartments()/clearAllPositions() – очистка данных;
+std::shared_ptr<Employee> cloneEmployee(const Employee& source) const – копирование сотрудника;
+void restoreEmployeeFromCopy(int employeeId, std::shared_ptr<Employee> employeeCopy, const HireDate& hireDateCopy) – восстановление записи.
+
+Классы интерфейса (GUI)
+
+Класс MainWindow
+Главное окно приложения, наследуется от QMainWindow в Qt и управляет всем взаимодействием с пользователем.
+Поля:
+std::unique_ptr<DataManager> manager – управляющий объект данных;
+QTableWidget *employeesTable – таблица сотрудников;
+QTableWidget *departmentsTable – таблица отделов;
+QTableWidget *positionsTable – таблица должностей.
+Методы и слоты:
+MainWindow(QWidget *parent = nullptr) – конструктор, настраивает окно и подключает слоты;
+void setupUI() – построение меню, таблиц и кнопок;
+void refreshAll() – обновление всех таблиц после изменений;
+void addEmployee()/editEmployee()/removeEmployee()/resetEmployees() – управление записями сотрудников;
+void addDepartment()/editDepartment()/removeDepartment()/resetDepartments() – управление отделами;
+void addPosition()/editPosition()/removePosition()/resetPositions() – управление должностями;
+void searchEmployees() – поиск сотрудников по фильтрам;
+void sortEmployees() – сортировка сотрудников по выбранному ключу;
+void showSearchResults(const std::vector<EmployeeRecord>& results) – вывод результатов поиска;
+void showSortedResults(const std::vector<EmployeeRecord>& results) – вывод отсортированных данных;
+void showAverageSalary() – показ средней зарплаты по отделу;
+void showEfficiencyRating() – показ рейтинга эффективности отделов;
+void undoLastAction() – отмена последнего действия через стек undo в DataManager.
+
+Классы исключений
+Базовый AppException (std::runtime_error) и производные ValidationException, EntityNotFoundException, OperationNotAllowedException, FileAccessException, DataFormatException, CollectionBoundsException. Используются для обозначения ошибок валидации, отсутствия сущностей, нарушения бизнес-правил, проблем файлового доступа, формата данных и выхода итератора за пределы коллекции.

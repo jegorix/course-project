@@ -729,9 +729,11 @@
   /Library/Developer/CommandLineTools/usr/lib/clang/17/include/limits.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/17/include/ptrcheck.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/17/include/stdarg.h \
+  /Users/macbook/Desktop/курсовая_25.11.25/include/Algorithm.h \
   /Users/macbook/Desktop/курсовая_25.11.25/include/DataManager.h \
   /Users/macbook/Desktop/курсовая_25.11.25/include/Department.h \
   /Users/macbook/Desktop/курсовая_25.11.25/include/Employee.h \
+  /Users/macbook/Desktop/курсовая_25.11.25/include/Exceptions.h \
   /Users/macbook/Desktop/курсовая_25.11.25/include/HireDate.h \
   /Users/macbook/Desktop/курсовая_25.11.25/include/Manager.h \
   /Users/macbook/Desktop/курсовая_25.11.25/include/Person.h \

@@ -179,6 +179,30 @@ HRManagementSystem_autogen/mocs_compilation.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/HRManagementSystem.dir/build.make CMakeFiles/HRManagementSystem.dir/HRManagementSystem_autogen/mocs_compilation.cpp.s
 .PHONY : HRManagementSystem_autogen/mocs_compilation.cpp.s
 
+src/Algorithm.o: src/Algorithm.cpp.o
+.PHONY : src/Algorithm.o
+
+# target to build an object file
+src/Algorithm.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HRManagementSystem.dir/build.make CMakeFiles/HRManagementSystem.dir/src/Algorithm.cpp.o
+.PHONY : src/Algorithm.cpp.o
+
+src/Algorithm.i: src/Algorithm.cpp.i
+.PHONY : src/Algorithm.i
+
+# target to preprocess a source file
+src/Algorithm.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HRManagementSystem.dir/build.make CMakeFiles/HRManagementSystem.dir/src/Algorithm.cpp.i
+.PHONY : src/Algorithm.cpp.i
+
+src/Algorithm.s: src/Algorithm.cpp.s
+.PHONY : src/Algorithm.s
+
+# target to generate assembly for a file
+src/Algorithm.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HRManagementSystem.dir/build.make CMakeFiles/HRManagementSystem.dir/src/Algorithm.cpp.s
+.PHONY : src/Algorithm.cpp.s
+
 src/DataManager.o: src/DataManager.cpp.o
 .PHONY : src/DataManager.o
 
@@ -250,6 +274,30 @@ src/Employee.s: src/Employee.cpp.s
 src/Employee.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/HRManagementSystem.dir/build.make CMakeFiles/HRManagementSystem.dir/src/Employee.cpp.s
 .PHONY : src/Employee.cpp.s
+
+src/FileManager.o: src/FileManager.cpp.o
+.PHONY : src/FileManager.o
+
+# target to build an object file
+src/FileManager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HRManagementSystem.dir/build.make CMakeFiles/HRManagementSystem.dir/src/FileManager.cpp.o
+.PHONY : src/FileManager.cpp.o
+
+src/FileManager.i: src/FileManager.cpp.i
+.PHONY : src/FileManager.i
+
+# target to preprocess a source file
+src/FileManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HRManagementSystem.dir/build.make CMakeFiles/HRManagementSystem.dir/src/FileManager.cpp.i
+.PHONY : src/FileManager.cpp.i
+
+src/FileManager.s: src/FileManager.cpp.s
+.PHONY : src/FileManager.s
+
+# target to generate assembly for a file
+src/FileManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/HRManagementSystem.dir/build.make CMakeFiles/HRManagementSystem.dir/src/FileManager.cpp.s
+.PHONY : src/FileManager.cpp.s
 
 src/HireDate.o: src/HireDate.cpp.o
 .PHONY : src/HireDate.o
@@ -433,6 +481,9 @@ help:
 	@echo "... HRManagementSystem_autogen/mocs_compilation.o"
 	@echo "... HRManagementSystem_autogen/mocs_compilation.i"
 	@echo "... HRManagementSystem_autogen/mocs_compilation.s"
+	@echo "... src/Algorithm.o"
+	@echo "... src/Algorithm.i"
+	@echo "... src/Algorithm.s"
 	@echo "... src/DataManager.o"
 	@echo "... src/DataManager.i"
 	@echo "... src/DataManager.s"
@@ -442,6 +493,9 @@ help:
 	@echo "... src/Employee.o"
 	@echo "... src/Employee.i"
 	@echo "... src/Employee.s"
+	@echo "... src/FileManager.o"
+	@echo "... src/FileManager.i"
+	@echo "... src/FileManager.s"
 	@echo "... src/HireDate.o"
 	@echo "... src/HireDate.i"
 	@echo "... src/HireDate.s"

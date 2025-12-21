@@ -1,301 +1,346 @@
 @startuml
 
-!theme plain
-
+scale 0.75
 skinparam linetype ortho
-skinparam classRoundCorner 0
-skinparam classBorderThickness 2
-skinparam classFontName "Times New Roman"
-skinparam classFontSize 14
-skinparam classFontStyle normal
-skinparam classFontColor black
-skinparam classAttributeIconSize 0
 skinparam classBorderColor black
 skinparam classBackgroundColor white
-skinparam classArrowColor black
-skinparam classAbstractFontStyle italic
-skinparam classAbstractFontColor black
-skinparam classAbstractUnderline true
-skinparam inheritanceArrowColor black
-
+skinparam classFontName "Arial"
+skinparam classFontSize 12
+skinparam classAttributeIconSize 0
 hide circle
 
-' ===== Базовый класс =====
-abstract class Person {
-  - firstName : std::string
-  - lastName  : std::string
-  --
-  + getFirstName() : std::string
-  + getLastName() : std::string
-  + getFullName() : std::string
-  + setFirstName(firstName : std::string) : void
-  + setLastName(lastName : std::string) : void
-  + {abstract} displayInfo() : void
+package "Домен" {
+  abstract class Person {
+    - firstName : std::string
+    - lastName  : std::string
+    --
+    + Person()
+    + Person(firstName, lastName)
+    + {abstract} ~Person()
+    + getFirstName() : std::string
+    + getLastName() : std::string
+    + getFullName() : std::string
+    + setFirstName(firstName : std::string) : void
+    + setLastName(lastName : std::string) : void
+    + {abstract} displayInfo() : void
+  }
+
+  class Employee {
+    # employeeId   : int
+    # departmentId : int
+    # salary       : double
+    --
+    + Employee()
+    + Employee(employeeId, firstName, lastName, departmentId, salary)
+    + {virtual} ~Employee()
+    + getEmployeeId() : int
+    + getDepartmentId() : int
+    + getSalary() : double
+    + setEmployeeId(employeeId : int) : void
+    + setDepartmentId(departmentId : int) : void
+    + setSalary(salary : double) : void
+    + {virtual} displayInfo() : void
+    + {virtual} calculateTotalIncome() : double
+  }
+
+  class Manager {
+    - subordinates : std::vector<int>
+    --
+    + Manager()
+    + Manager(employeeId, firstName, lastName, departmentId, salary, subordinates)
+    + ~Manager()
+    + addSubordinate(subordinateId : int) : void
+    + removeSubordinate(subordinateId : int) : void
+    + getSubordinates() : std::vector<int>
+    + getSubordinatesCount() : int
+    + hasSubordinate(subordinateId : int) : bool
+    + {override} displayInfo() : void
+    + {override} calculateTotalIncome() : double
+  }
+
+  class Worker {
+    - positionId : int
+    - bonus      : double
+    --
+    + Worker()
+    + Worker(employeeId, firstName, lastName, departmentId, salary, positionId, bonus = 0.0)
+    + ~Worker()
+    + getPositionId() : int
+    + getBonus() : double
+    + setPositionId(positionId : int) : void
+    + setBonus(bonus : double) : void
+    + {override} displayInfo() : void
+    + {override} calculateTotalIncome() : double
+  }
+
+  class Department {
+    - departmentId   : int
+    - departmentName : std::string
+    - managerId      : int
+    - employees      : std::vector<int>
+    --
+    + Department()
+    + Department(departmentId, departmentName, managerId)
+    + ~Department()
+    + getDepartmentId() : int
+    + getDepartmentName() : std::string
+    + getManagerId() : int
+    + getEmployees() : std::vector<int>
+    + getEmployeesCount() : int
+    + setDepartmentId(departmentId : int) : void
+    + setDepartmentName(departmentName : std::string) : void
+    + setManagerId(managerId : int) : void
+    + addEmployee(employeeId : int) : void
+    + removeEmployee(employeeId : int) : void
+    + hasEmployee(employeeId : int) : bool
+    + clearEmployees() : void
+    + displayInfo() : void
+  }
+
+  class Position {
+    - positionId      : int
+    - positionName    : std::string
+    - workHoursPerWeek: int
+    --
+    + Position()
+    + Position(positionId, positionName, workHoursPerWeek)
+    + ~Position()
+    + getPositionId() : int
+    + getPositionName() : std::string
+    + getWorkHoursPerWeek() : int
+    + setPositionId(positionId : int) : void
+    + setPositionName(positionName : std::string) : void
+    + setWorkHoursPerWeek(workHoursPerWeek : int) : void
+    + displayInfo() : void
+  }
+
+  class HireDate {
+    - employeeId : int
+    - day    : int
+    - month  : int
+    - year   : int
+    - hour   : int
+    - minute : int
+    --
+    + HireDate()
+    + HireDate(employeeId, day, month, year, hour, minute)
+    + ~HireDate()
+    + getEmployeeId() : int
+    + getDay() : int
+    + getMonth() : int
+    + getYear() : int
+    + getHour() : int
+    + getMinute() : int
+    + setEmployeeId(employeeId : int) : void
+    + setDay(day : int) : void
+    + setMonth(month : int) : void
+    + setYear(year : int) : void
+    + setHour(hour : int) : void
+    + setMinute(minute : int) : void
+    + getDateString() : std::string
+    + getTimeString() : std::string
+    + getFullDateTimeString() : std::string
+    + displayInfo() : void
+  }
 }
 
-' ===== Сотрудники =====
-class Employee {
-  # employeeId   : int
-  # departmentId : int
-  # salary       : double
-  --
-  + getEmployeeId() : int
-  + getDepartmentId() : int
-  + getSalary() : double
-  + setEmployeeId(employeeId : int) : void
-  + setDepartmentId(departmentId : int) : void
-  + setSalary(salary : double) : void
-  + {virtual} displayInfo() : void
-  + {virtual} calculateTotalIncome() : double
+package "Инфраструктура" {
+  class EmployeeRecord {
+    + employee : std::shared_ptr<Employee>
+    + hireDate : HireDate
+  }
+
+  class EmployeeSearchFilter {
+    + useDepartmentId : bool
+    + departmentId    : int
+    + usePositionId   : bool
+    + positionId      : int
+    + useMinSalary    : bool
+    + minSalary       : double
+    + useMaxSalary    : bool
+    + maxSalary       : double
+    + useNameFragment : bool
+    + nameFragment    : std::string
+  }
+
+  enum EmployeeSortKey {
+    ById
+    ByDepartment
+    BySalary
+    ByLastName
+    ByHireDate
+  }
+
+  class UndoCommand {
+    + undo        : std::function<void()>
+    + description : std::string
+  }
+
+  class "RecordCollection<T>" as RecordCollectionT {
+    - records : std::vector<T>
+    --
+    + size() : std::size_t
+    + empty() : bool
+    + reserve(capacity : std::size_t) : void
+    + add(value : T) : void
+    + at(index : std::size_t) : T&
+    + operator[](index : std::size_t) : T&
+    + clear() : void
+    + findIf(predicate) : Iterator
+    + removeIf(predicate) : void
+    + insertionSort(compare) : void
+    + forEach(fn) : void
+    + data() : std::vector<T>&
+  }
+
+  class "RecordCollection<T>::Iterator" as Iterator {
+    - current : T*
+    - begin   : T*
+    - end     : T*
+    --
+    + operator*() : T&
+    + operator->() : T*
+    + operator++() : Iterator&
+    + operator--() : Iterator&
+    + operator+(offset : difference_type) : Iterator
+    + operator-(offset : difference_type) : Iterator
+    + operator==(other) : bool
+    + operator!=(other) : bool
+  }
+
+  class DataManager {
+    - employeesPath    : std::string
+    - departmentsPath  : std::string
+    - positionsPath    : std::string
+    - hiresPath        : std::string
+    - employees   : RecordCollection<EmployeeRecord>
+    - departments : RecordCollection<Department>
+    - positions   : RecordCollection<Position>
+    - employeeIndex   : std::unordered_map<int,std::size_t>
+    - departmentIndex : std::unordered_map<int,std::size_t>
+    - positionIndex   : std::unordered_map<int,std::size_t>
+    - undoStack       : std::vector<UndoCommand>
+    - undoInProgress  : bool
+    - nextEmployeeId   : int
+    - nextDepartmentId : int
+    - nextPositionId   : int
+    --
+    + DataManager(dataDirectory : std::string)
+    + loadAll() : void
+    + saveAll() : void
+    + getEmployees() : RecordCollection<EmployeeRecord>&
+    + getDepartments() : RecordCollection<Department>&
+    + getPositions() : RecordCollection<Position>&
+    + addWorker(...) : int
+    + addManager(...) : int
+    + removeEmployee(employeeId : int) : bool
+    + updateEmployeeDepartment(employeeId, newDepartmentId) : bool
+    + updateEmployeeSalary(employeeId, newSalary) : bool
+    + updateEmployeePosition(employeeId, newPositionId) : bool
+    + updateEmployeeBonus(employeeId, newBonus) : bool
+    + updateEmployeeName(employeeId, firstName, lastName) : bool
+    + updateEmployeeHireDate(employeeId, hireDate) : bool
+    + addDepartment(name : std::string, managerId : int) : int
+    + removeDepartment(departmentId : int) : bool
+    + updateDepartmentName(departmentId, newName) : bool
+    + updateDepartmentManager(departmentId, managerId) : bool
+    + addPosition(name : std::string, hoursPerWeek : int) : int
+    + removePosition(positionId : int) : bool
+    + updatePositionName(positionId, newName) : bool
+    + updatePositionHours(positionId, hoursPerWeek) : bool
+    + findEmployees(filter : EmployeeSearchFilter) : std::vector<EmployeeRecord>
+    + sortEmployees(key : EmployeeSortKey, descending : bool) : std::vector<EmployeeRecord>
+    + calculateAverageSalaryForDepartment(departmentId : int) : double
+    + buildDepartmentsEfficiencyRating() : std::vector<std::pair<int,double>>
+    + canUndo() : bool
+    + undoLastAction() : bool
+    + getLastUndoDescription() : std::string
+  }
 }
 
-class Manager {
-  - subordinates : std::vector<int>
-  --
-  + addSubordinate(subordinateId : int) : void
-  + removeSubordinate(subordinateId : int) : void
-  + getSubordinates() : std::vector<int>
-  + getSubordinatesCount() : int
-  + hasSubordinate(subordinateId : int) : bool
-  + {override} displayInfo() : void
-  + {override} calculateTotalIncome() : double
+package "UI" {
+  class MainWindow {
+    - manager : std::unique_ptr<DataManager>
+    - employeesTable   : QTableWidget*
+    - departmentsTable : QTableWidget*
+    - positionsTable   : QTableWidget*
+    --
+    + MainWindow(parent : QWidget*)
+    + addEmployee() : void
+    + editEmployee() : void
+    + removeEmployee() : void
+    + resetEmployees() : void
+    + addDepartment() : void
+    + editDepartment() : void
+    + removeDepartment() : void
+    + resetDepartments() : void
+    + addPosition() : void
+    + editPosition() : void
+    + removePosition() : void
+    + resetPositions() : void
+    + searchEmployees() : void
+    + sortEmployees() : void
+    + showAverageSalary() : void
+    + showEfficiencyRating() : void
+    + undoLastAction() : void
+    - setupUI() : void
+    - refreshAll() : void
+  }
 }
 
-class Worker {
-  - positionId : int
-  - bonus      : double
-  --
-  + getPositionId() : int
-  + getBonus() : double
-  + setPositionId(positionId : int) : void
-  + setBonus(bonus : double) : void
-  + {override} displayInfo() : void
-  + {override} calculateTotalIncome() : double
+package "Исключения" {
+  class MyException {
+    - code    : int
+    - message : std::string
+    --
+    + MyException()
+    + MyException(code : int, message : std::string)
+    + ~MyException()
+    + GetCode() : int
+    + GetMessage() : std::string
+    + SetCode(code : int) : void
+    + SetMessage(message : std::string) : void
+    + what() : const char*
+    + ShowError() : void
+  }
+
+  class MyExceptionContainer {
+    + MyExceptionContainer()
+    + MyExceptionContainer(code : int, message : std::string)
+    + ~MyExceptionContainer()
+    + ShowError() : void
+  }
+
+  class MyExceptionFile {
+    + MyExceptionFile()
+    + MyExceptionFile(code : int, message : std::string)
+    + ~MyExceptionFile()
+    + ShowError() : void
+  }
+
+  class MyExceptionInput {
+    + MyExceptionInput()
+    + MyExceptionInput(code : int, message : std::string)
+    + ~MyExceptionInput()
+    + ShowError() : void
+  }
 }
 
-' ===== Отдел, должность, дата найма =====
-class Department {
-  - departmentId   : int
-  - departmentName : std::string
-  - managerId      : int
-  - employees      : std::vector<int>
-  --
-  + getDepartmentId() : int
-  + getDepartmentName() : std::string
-  + getManagerId() : int
-  + getEmployees() : std::vector<int>
-  + getEmployeesCount() : int
-  + setDepartmentId(departmentId : int) : void
-  + setDepartmentName(departmentName : std::string) : void
-  + setManagerId(managerId : int) : void
-  + addEmployee(employeeId : int) : void
-  + removeEmployee(employeeId : int) : void
-  + hasEmployee(employeeId : int) : bool
-  + displayInfo() : void
-}
-
-class Position {
-  - positionId      : int
-  - positionName    : std::string
-  - workHoursPerWeek: int
-  --
-  + getPositionId() : int
-  + getPositionName() : std::string
-  + getWorkHoursPerWeek() : int
-  + setPositionId(positionId : int) : void
-  + setPositionName(positionName : std::string) : void
-  + setWorkHoursPerWeek(workHoursPerWeek : int) : void
-  + displayInfo() : void
-}
-
-class HireDate {
-  - employeeId : int
-  - day        : int
-  - month      : int
-  - year       : int
-  - hour       : int
-  - minute     : int
-  --
-  + getEmployeeId() : int
-  + getDay() : int
-  + getMonth() : int
-  + getYear() : int
-  + getHour() : int
-  + getMinute() : int
-  + setEmployeeId(employeeId : int) : void
-  + setDay(day : int) : void
-  + setMonth(month : int) : void
-  + setYear(year : int) : void
-  + setHour(hour : int) : void
-  + setMinute(minute : int) : void
-  + getDateString() : std::string
-  + getTimeString() : std::string
-  + getFullDateTimeString() : std::string
-  + displayInfo() : void
-}
-
-' ===== Вспомогательные структуры =====
-class EmployeeRecord {
-  + employee : std::shared_ptr<Employee>
-  + hireDate : HireDate
-}
-
-class EmployeeSearchFilter {
-  + useDepartmentId : bool
-  + departmentId    : int
-  + usePositionId   : bool
-  + positionId      : int
-  + useMinSalary    : bool
-  + minSalary       : double
-  + useMaxSalary    : bool
-  + maxSalary       : double
-  + useNameFragment : bool
-  + nameFragment    : std::string
-}
-
-enum EmployeeSortKey {
-  ById
-  ByDepartment
-  BySalary
-  ByLastName
-  ByHireDate
-}
-
-class UndoCommand {
-  + undo        : std::function<void()>
-  + description : std::string
-}
-
-' ===== Обобщённый контейнер =====
-class "RecordCollection<T>" as RecordCollectionT {
-  - records : std::vector<T>
-  --
-  + size() : std::size_t
-  + empty() : bool
-  + reserve(capacity : std::size_t) : void
-  + add(value : T) : void
-  + at(index : std::size_t) : T&
-  + clear() : void
-  + data() : std::vector<T>&
-  + findIf(predicate) : Iterator
-  + removeIf(predicate) : void
-  + insertionSort(compare) : void
-  + forEach(fn) : void
-}
-
-class "RecordCollection<T>::Iterator" as Iterator {
-  - current : T*
-  - begin   : T*
-  - end     : T*
-  --
-  + operator*() : T&
-  + operator++() : Iterator&
-  + operator--() : Iterator&
-  + operator==(other) : bool
-  + operator!=(other) : bool
-}
-
-' ===== Исключения =====
-class "std::exception" as StdException {
-  + what() : const char*
-}
-
-class "std::runtime_error" as RuntimeError {
-  + what() : const char*
-}
-
-class "std::out_of_range" as OutOfRange {
-  + what() : const char*
-}
-
-' ===== DataManager =====
-class DataManager {
-  - employeesPath   : std::string
-  - departmentsPath : std::string
-  - positionsPath   : std::string
-  - hiresPath       : std::string
-  - employees   : RecordCollection<EmployeeRecord>
-  - departments : RecordCollection<Department>
-  - positions   : RecordCollection<Position>
-  - employeeIndex   : std::unordered_map<int,std::size_t>
-  - departmentIndex : std::unordered_map<int,std::size_t>
-  - positionIndex   : std::unordered_map<int,std::size_t>
-  - undoStack       : std::vector<UndoCommand>
-  - undoInProgress  : bool
-  - nextEmployeeId   : int
-  - nextDepartmentId : int
-  - nextPositionId   : int
-  --
-  + DataManager(dataDirectory : std::string)
-  + loadAll() : void
-  + saveAll() : void
-  + getEmployees() : RecordCollection<EmployeeRecord>&
-  + getDepartments() : RecordCollection<Department>&
-  + getPositions() : RecordCollection<Position>&
-  + addWorker(...) : int
-  + addManager(...) : int
-  + removeEmployee(employeeId : int) : bool
-  + addDepartment(name : std::string, managerId : int) : int
-  + removeDepartment(departmentId : int) : bool
-  + addPosition(name : std::string, hoursPerWeek : int) : int
-  + removePosition(positionId : int) : bool
-  + findEmployees(filter : EmployeeSearchFilter) : std::vector<EmployeeRecord>
-  + sortEmployees(key : EmployeeSortKey, descending : bool) : std::vector<EmployeeRecord>
-  + calculateAverageSalaryForDepartment(departmentId : int) : double
-  + buildDepartmentsEfficiencyRating() : std::vector<std::pair<int,double>>
-  + canUndo() : bool
-  + undoLastAction() : bool
-  + getLastUndoDescription() : std::string
-  --
-  - loadEmployees() : void
-  - loadDepartments() : void
-  - loadPositions() : void
-  - loadHireDates() : void
-  - saveEmployees() : void
-  - saveDepartments() : void
-  - savePositions() : void
-  - saveHireDates() : void
-  - cloneEmployee(source : Employee) : std::shared_ptr<Employee>
-  - findEmployeeRecord(employeeId : int) : EmployeeRecord*
-  - findDepartment(departmentId : int) : Department*
-  - findPosition(positionId : int) : Position*
-  - registerEmployee(record : EmployeeRecord) : void
-  - unregisterEmployee(employeeId : int) : void
-  - ensureDepartmentContainsEmployee(departmentId : int, employeeId : int) : void
-  - removeEmployeeFromDepartment(departmentId : int, employeeId : int) : void
-  - pushUndo(undoAction : std::function<void()>, description : std::string) : void
-  - generateEmployeeId() : int
-  - generateDepartmentId() : int
-  - generatePositionId() : int
-}
-
-' ===== Qt интерфейс =====
-class MainWindow {
-  - manager : std::unique_ptr<DataManager>
-  - employeesTable : QTableWidget*
-  - departmentsTable : QTableWidget*
-  - positionsTable : QTableWidget*
-  --
-  + MainWindow(parent : QWidget*)
-  --
-  - setupUI() : void
-  - refreshAll() : void
-  - addEmployee() : void
-  - removeEmployee() : void
-  - showAverageSalary() : void
-  - showEfficiencyRating() : void
-  - undoLastAction() : void
-}
-
-' ===== Наследование =====
+' Наследование домена
 Employee --|> Person
 Manager  --|> Employee
 Worker   --|> Employee
 
-RuntimeError --|> StdException
-OutOfRange --|> StdException
+' Наследование исключений (как на образце)
+MyExceptionContainer --|> MyException
+MyExceptionFile      --|> MyException
+MyExceptionInput     --|> MyException
 
-' ===== Ассоциации =====
+' Ассоциации и зависимости
+Worker --> Position
+Department --> Employee
+HireDate --> Employee
+Manager --> Employee
 DataManager --> EmployeeRecord
 DataManager --> Department
 DataManager --> Position
@@ -304,22 +349,11 @@ DataManager --> UndoCommand
 DataManager --> EmployeeSearchFilter
 DataManager --> EmployeeSortKey
 DataManager --> RecordCollectionT
-
 EmployeeRecord --> Employee
 EmployeeRecord --> HireDate
-
-Worker --> Position
-Department --> Employee
-Manager --> Employee
-HireDate --> Employee
-
 RecordCollectionT --> Iterator
-
 MainWindow --> DataManager
-
-' ===== Исключения =====
-DataManager ..> RuntimeError : throws
-RecordCollectionT::Iterator ..> OutOfRange : throws
+DataManager ..> MyException : throws
+RecordCollectionT::Iterator ..> MyException : throws
 
 @enduml
-
